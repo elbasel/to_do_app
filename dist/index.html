@@ -9,13 +9,16 @@
 <script defer src="runtime.bundle.js"></script><script defer src="index.bundle.js"></script></head>
 
 <body>
-    <div id="sidebar"></div>
+    <div id="sidebar">
+        <p>Today</p>
+        <p>Today</p>
+    </div>
     <main>
         <!-- <p>Working On: </p> -->
         <div id="to-do-container">
             <table>
                 <thead>
-                    <tr>
+                    <tr id="headers">
                         <th class="checkbox"></th>
                         <th>Name</th>
                         <th>Due Date</th>
@@ -41,7 +44,7 @@
                     </tr> -->
                     <tr id="add-task">
                         <td><input type="text" placeholder="Quickly add a task" id="textInput"></td>
-                        <p></p>
+                        <p id="error-placeholder"></p>
 
                         <td><input type="date"></td>
                         <td id="button-td"><button>+</button></td>

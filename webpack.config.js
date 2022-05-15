@@ -19,7 +19,8 @@ module.exports = {
   optimization: {
     runtimeChunk: 'single',
   },
-  devtool: 'inline-source-map',
+  // devtool: 'inline-source-map',
+  devtool: 'source-map',
   plugins: [
     new HtmlWebpackPlugin({
      template: './src/index.html'

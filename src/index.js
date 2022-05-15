@@ -3,7 +3,8 @@ import PubSub from 'pubsub-js'
 import ToDo from './scripts/to_do'
 import Ui from './scripts/ui'
 
-const _ = (function () {
+const App
+ = (function () {
 
 
 
@@ -19,22 +20,21 @@ const _ = (function () {
         const name = userInput.name
         const dueDate = userInput.dueDate
         Ui.domElements.errorOutput.style.display = 'none'
-        if (name.length >= 1) {
+        if (name.length >= 1 && name.length <= 20) {
             if (msg === 'add-button-clicked') {
                 addTask(name, dueDate)
             }
-            Ui.domElements.errorOutput.style.display = 'none'
-            Ui.outputError('')
+            Ui.clearError()
         }
         else {
             if (msg === 'input' && Ui.domElements.textInput.value === '') {
                 
-                Ui.domElements.errorOutput.style.display = 'none'
+                Ui.clearError()
                 return
             }
             Ui.domElements.errorOutput.style.display = 'block'
 
-            Ui.outputError('Name Must be more than 1 characters long')
+            Ui.outputError('Title Must be between 1 and 20 characters long')
 
         }
     }
@@ -69,8 +69,6 @@ const _ = (function () {
         Ui.domElements.textInput.addEventListener('keydown', (e) => PubSub.publish('text-input-keydown', e.key))
         // window.addEventListener('load', PubSub.publish('page-loaded'))
         Ui.setDateInputDefaultValue()
-
-
     }
 
 
@@ -79,4 +77,7 @@ const _ = (function () {
 })();
 
 
-_.start()
+App.start()
+
+
+export default Ui

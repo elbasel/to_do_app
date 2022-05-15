@@ -96,6 +96,10 @@ body {
     flex: 1;
     /* border: 1px solid white; */
     background-color: var(--primary);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 main {
@@ -177,7 +181,7 @@ tbody::-webkit-scrollbar {
 }
 
 tbody>tr {
-    /* border: 1px solid blue; */
+    border: 1px solid rgba(0, 0, 0, 0);
     background-color: var(--secondary);
     padding: 16px;
     border-radius: 24px;
@@ -257,19 +261,16 @@ tbody>tr {
     outline: none;
 }
 
-p {
+#error-placeholder {
     position: fixed;
-    font-size: 12px;
+    font-size: 18px;
     color: white;
     z-index: 2;
     font-weight: 100;
-    top: 84%;
-    left: 31%;
+    top: 83%;
+    left: 32%;
     color: red;
     font-family: monospace;
-
-
-
 }
 
 td.remove {
@@ -293,6 +294,32 @@ td.remove:hover {
     border-radius: 69px;
     box-shadow: inset 0px 0px 20px 20px #ffffff0d;
 }
+
+input[type="checkbox"] {
+    border-radius: 50%;
+    width: 1.3em;
+    height: 1.3em;
+    vertical-align: middle;
+    border: 1px solid #ddd;
+    appearance: none;
+    -webkit-appearance: none;
+    outline: none;
+    cursor: pointer;
+}
+
+input[type="checkbox"]:checked {
+    background-color: grey;
+}
+
+
+#headers {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.295);
+}
+
+
+
+
+
 
 @keyframes tracking-in-expand {
     0% {
@@ -318,5 +345,29 @@ td.remove:hover {
     100% {
         transform: scale(0);
         opacity: 1;
+    }
+}
+
+@keyframes slide-out-right {
+    0% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateX(1000px);
+        opacity: 0;
+    }
+}
+
+@keyframes rotate-out-hor {
+    0% {
+        transform: rotateX(360deg);
+        opacity: 1;
+    }
+
+    100% {
+        transform: rotateX(0deg);
+        opacity: 0;
     }
 }
