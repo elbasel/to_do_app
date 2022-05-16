@@ -21975,145 +21975,132 @@ __webpack_require__.e(/*! import() */ "src_index_css").then(__webpack_require__.
 
 
 const App
- = (function () {
+    = (function () {
 
-    let currentActiveView = 'main-tasks'
+        let currentActiveView = 'main-tasks'
 
-    function removeToDo(id) {
+        function removeToDo(id) {
 
-        if (currentActiveView === 'main-tasks') {
-            _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].removeActiveToDo(id)
-        }
-        else if (currentActiveView === 'completed-tasks') {
-            _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].removeCompletedToDo(id)
-        }
-    }
-
-    function updateCounter() {
-        _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.mainTasksCounter.textContent = _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].getCurrentMainTasks().length
-        _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.completedTasksCounter.textContent = _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].getCompletedTasks().length
-    }
-
-    function addTask(name, dueDate) {
-        const newTask = _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].createToDo(name, dueDate)
-        _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].clearTextInput()
-        pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().publish('new-to-do', newTask)
-    }
-
-    function validateTask(msg, userInput) {
-
-        const name = userInput.name
-        const dueDate = userInput.dueDate
-        _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.errorOutput.style.display = 'none'
-        
-        // if (name.length >= 1 && name.length <= 20) {
-        if (name.length >= 1) {
-
-            if (msg === 'add-button-clicked') {
-                addTask(name, dueDate)
+            if (currentActiveView === 'main-tasks') {
+                _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].removeActiveToDo(id)
             }
-            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].clearError()
+            else if (currentActiveView === 'completed-tasks') {
+                _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].removeCompletedToDo(id)
+            }
         }
-        else {
-            if (msg === 'input' && _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.textInput.value === '') {
-                
+
+        function updateCounter() {
+            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.mainTasksCounter.textContent = _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].getCurrentMainTasks().length
+            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.completedTasksCounter.textContent = _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].getCompletedTasks().length
+        }
+
+        function addTask(name, dueDate) {
+            const newTask = _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].createToDo(name, dueDate)
+            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].clearTextInput()
+            pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().publish('new-to-do', newTask)
+        }
+
+        function validateTask(msg, userInput) {
+
+            const name = userInput.name
+            const dueDate = userInput.dueDate
+            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.errorOutput.style.display = 'none'
+
+            // if (name.length >= 1 && name.length <= 20) {
+            if (name.length >= 1) {
+
+                if (msg === 'add-button-clicked') {
+                    addTask(name, dueDate)
+                }
                 _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].clearError()
-                return
             }
-            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.errorOutput.style.display = 'block'
+            else {
+                if (msg === 'input' && _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.textInput.value === '') {
 
-            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].outputError('Title Must be between 1 and 20 characters long')
+                    _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].clearError()
+                    return
+                }
+                _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.errorOutput.style.display = 'block'
 
-        }
-    }
+                _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].outputError('Title Must be between 1 and 20 characters long')
 
-    function textInputKeydown(key) {
-        if (key === 'Enter') {
-            pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().publish('add-button-clicked', _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].getUserInput())
-        }
-    }
-
-
-    function showCompletedTasks() {
-
-
-        if (currentActiveView === 'completed-tasks') return
-
-        currentActiveView = 'completed-tasks'
-        _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].clearTaskView()
-        for (const task of _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].getCompletedTasks()) {
-
-            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].appendToDo(task.id, task.name, task.dueDate, true)
+            }
         }
 
-        _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.tBody.style.height = '100%'
-        _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.tableContainer.style.paddingBottom = '0px'
-        _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.tBody.style.paddingBottom = '16px'
-    }
-
-
-    function showMainTasks() {
-        if (currentActiveView === 'main-tasks') return
-
-        currentActiveView = 'main-tasks'
-        _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].clearTaskView()
-        _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].appendAddTaskRow()
-        for (const task of _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].getCurrentMainTasks()) {
-            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].appendToDo(task.id, task.name, task.dueDate)
+        function textInputKeydown(key) {
+            if (key === 'Enter') {
+                pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().publish('add-button-clicked', _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].getUserInput())
+            }
         }
 
-        _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.tBody.style.height = '60%'
-        _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.tableContainer.style.paddingBottom = '2rem'
-        _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.tBody.style.padddingBottom = '0px'
 
-    }
-
-    function start() {
+        function showCompletedTasks() {
 
 
-        pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('text-input-keydown', (msg, key) => textInputKeydown(key))
-        pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('add-button-clicked', (msg, userInput) => validateTask(msg, userInput))
-        pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('new-to-do', (msg, task) => _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].appendToDo(task.id, task.name, task.dueDate))
-        pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('input', (msg, userInput) => validateTask(msg, userInput))
-        pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('to-do-removed', (msg, id) => removeToDo(+id))
-        pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('to-do-completed', (msg, id) => _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].completeToDo(+id))
-        pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('completed-requested', (msg, data) => showCompletedTasks())
-        pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('main-tasks-requested', (msg, data) => showMainTasks())
-        
-        pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('to-do-removed', (msg, id) => updateCounter())
-        pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('to-do-completed', (msg, id) => updateCounter())
-        pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('new-to-do', (msg, id) => updateCounter())
+            if (currentActiveView === 'completed-tasks') return
 
-        // PubSub.subscribe('page-loaded', (msg, data) => loadSaved())
-        _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.addButton.addEventListener('click', () => pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().publish('add-button-clicked', _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].getUserInput()))
-        _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.textInput.addEventListener('input', () => pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().publish('input', _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].getUserInput()))
-        _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.textInput.addEventListener('keydown', (e) => pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().publish('text-input-keydown', e.key))
-        _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.completedTasksButton.addEventListener('click', () => pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().publish('completed-requested'))
-        _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.mainTasksButton.addEventListener('click', () => pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().publish('main-tasks-requested'))
-        // window.addEventListener('load', PubSub.publish('page-loaded'))
-        _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].setDateInputDefaultValue()
+            currentActiveView = 'completed-tasks'
+            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].clearTaskView()
+            for (const task of _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].getCompletedTasks()) {
+
+                _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].appendToDo(task.id, task.name, task.dueDate, true)
+            }
+
+            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.tBody.style.height = '100%'
+            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.tableContainer.style.paddingBottom = '0px'
+            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.tBody.style.paddingBottom = '16px'
+        }
 
 
-        //Testing Reasons
+        function showMainTasks() {
+            if (currentActiveView === 'main-tasks') return
 
-        addTask('Test', new Date())
-        addTask('Test', new Date())
-        addTask('Test', new Date())
-        addTask('Test', new Date())
-        addTask('Test', new Date())
-        addTask('Test', new Date())
-        addTask('Test', new Date())
-        addTask('Test', new Date())
-        addTask('Test', new Date())
-        addTask('Test', new Date())
+            currentActiveView = 'main-tasks'
+            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].clearTaskView()
+            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].appendAddTaskRow()
+            for (const task of _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].getCurrentMainTasks()) {
+                _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].appendToDo(task.id, task.name, task.dueDate)
+            }
 
-    }
+            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.tBody.style.height = '60%'
+            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.tableContainer.style.paddingBottom = '2rem'
+            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.tBody.style.padddingBottom = '0px'
+
+        }
+
+        function start() {
+
+
+            pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('text-input-keydown', (msg, key) => textInputKeydown(key))
+            pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('add-button-clicked', (msg, userInput) => validateTask(msg, userInput))
+            pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('new-to-do', (msg, task) => _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].appendToDo(task.id, task.name, task.dueDate))
+            pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('input', (msg, userInput) => validateTask(msg, userInput))
+            pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('to-do-removed', (msg, id) => removeToDo(+id))
+            pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('to-do-completed', (msg, id) => _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].completeToDo(+id))
+            pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('completed-requested', (msg, data) => showCompletedTasks())
+            pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('main-tasks-requested', (msg, data) => showMainTasks())
+
+            pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('to-do-removed', (msg, id) => updateCounter())
+            pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('to-do-completed', (msg, id) => updateCounter())
+            pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('new-to-do', (msg, id) => updateCounter())
+
+            // PubSub.subscribe('page-loaded', (msg, data) => loadSaved())
+            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.addButton.addEventListener('click', () => pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().publish('add-button-clicked', _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].getUserInput()))
+            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.textInput.addEventListener('input', () => pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().publish('input', _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].getUserInput()))
+            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.textInput.addEventListener('keydown', (e) => pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().publish('text-input-keydown', e.key))
+            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.completedTasksButton.addEventListener('click', () => pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().publish('completed-requested'))
+            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.mainTasksButton.addEventListener('click', () => pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().publish('main-tasks-requested'))
+            // window.addEventListener('load', PubSub.publish('page-loaded'))
+            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].setDateInputDefaultValue()
+
+
+        }
 
 
 
-    return { start }
+        return { start }
 
-})()
+    })()
 
 
 App.start()
@@ -22133,7 +22120,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-const ToDo = (function(){
+const ToDo = (function () {
 
     const toDoArray = []
     const doneArray = []
@@ -22148,7 +22135,7 @@ const ToDo = (function(){
 
     function createToDo(name, dueDate) {
         //dueDate is a javascript Date Object
-        const newObj = Object.assign(Object.create(proto), {id: idCounter++, name, dueDate})
+        const newObj = Object.assign(Object.create(proto), { id: idCounter++, name, dueDate })
         toDoArray.push(newObj)
         return newObj
     }
@@ -22160,7 +22147,7 @@ const ToDo = (function(){
             }
         }
     }
-    
+
     function removeCompletedToDo(id) {
 
         for (let i = 0; i < doneArray.length; i++) {
@@ -22173,7 +22160,7 @@ const ToDo = (function(){
 
     function completeToDo(id) {
 
-        
+
         for (let i = 0; i < toDoArray.length; i++) {
             if (toDoArray[i].id === id) {
                 doneArray.push(toDoArray.splice(i, 1)[0])
@@ -22235,8 +22222,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 // PubSub emiiters defined here:
-    //to-do-completed => task-id
-    //to-do-removed => task-id
+//to-do-completed => task-id
+//to-do-removed => task-id
 
 const Ui = (function () {
 
@@ -22330,7 +22317,7 @@ const Ui = (function () {
         addButton.addEventListener('click', () => pubsub_js__WEBPACK_IMPORTED_MODULE_1___default().publish('add-button-clicked', getUserInput()))
         input.addEventListener('input', () => pubsub_js__WEBPACK_IMPORTED_MODULE_1___default().publish('input', getUserInput()))
         input.addEventListener('keydown', (e) => pubsub_js__WEBPACK_IMPORTED_MODULE_1___default().publish('text-input-keydown', e.key))
-        
+
 
         domElements.tBody.appendChild(addTaskRow)
 
@@ -22368,24 +22355,20 @@ const Ui = (function () {
         const animationSeconds = 0.6;
         const rowToRemove = document.querySelector(`tr[task-id="${id}"]`)
 
-        // rowToRemove.setAttribute('style', `animation: scale-out-center ${animationSeconds}s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;`)
 
         // Easy access to animation
-        // rowToRemove.style.borderColor = colors.doneGreen
         const borderColor = `border-color: ${colors.doneGreen}`
         let removeAnimation = "animation: slide-out-right 0.5s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;"
         removeAnimation = removeAnimation.replace(/ \d.\ds /, ' ' + animationSeconds + 's ')
 
         rowToRemove.setAttribute('style', removeAnimation + '; ' + borderColor)
-        // rowToRemove.style.animation = removeAnimation
         setTimeout(() => domElements.tBody.removeChild(rowToRemove), (animationSeconds - 0.2) * 1000)
 
-        // domElements.tBody.removeChild(rowToRemove)
     }
 
 
 
-    function appendToDo(id, name, dueDate, skipCheckMark=false) {
+    function appendToDo(id, name, dueDate, skipCheckMark = false) {
 
         const row = document.createElement('tr')
         row.setAttribute('task-id', id)
@@ -22450,7 +22433,6 @@ const Ui = (function () {
     return {
         appendToDo,
         removeToDo,
-        // scrollToBottom,
         setDateInputDefaultValue,
         getUserInput,
         outputError,
