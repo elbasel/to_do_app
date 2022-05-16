@@ -1,6 +1,7 @@
 const ToDo = (function(){
 
     const toDoArray = []
+    const doneArray = []
 
     const proto = {
         type: 'to_do'
@@ -9,6 +10,7 @@ const ToDo = (function(){
 
 
     function createToDo(name, dueDate) {
+        //dueDate is a javascript Date Object
         const newObj = Object.assign(Object.create(proto), {id: toDoArray.length, name, dueDate})
         toDoArray.push(newObj)
         return newObj
@@ -18,6 +20,21 @@ const ToDo = (function(){
         toDoArray.splice(id, 1)
     }
 
+    function completeToDo(id) {
+        const doneToDo = toDoArray.splice(id, 1)
+        doneArray.push(doneToDo)
+        console.log({doneArray})
+        
+    }
+
+
+    function getCompletedTasks() {
+        return doneArray
+    }
+
+    function getCurrentMainTasks() {
+        return toDoArray
+    }
     // function saveData() {
     //     localStorage.setItem('to-dos', JSON.stringify(toDoArray))
     // }
@@ -29,6 +46,9 @@ const ToDo = (function(){
     return {
         createToDo,
         removeToDo,
+        completeToDo,
+        getCompletedTasks,
+        getCurrentMainTasks,
         // saveData,
         // getSavedData
     }

@@ -9,6 +9,7 @@
     --blue: #004daa;
     --caption: #e8e6e3;
     --montserrat: 'Montserrat', sans-serif;
+    --doneGreen: rgba(0, 128, 0, 0.274);
 }
 
 /* ========== END Dark Mode Colors ========== */
@@ -100,6 +101,43 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 16px;
+    font-family: "Helvetica Neue", Helvetica, Arial, Roboto, sans-serif;
+    font-weight: 600;
+
+
+}
+
+#sidebar > div {
+    /* border: 1px solid red; */
+    width: 99%;
+    display: flex;
+    gap: 16px;
+    font-size: 24px;
+    align-items: center;
+    padding: 12px;
+}
+
+#sidebar > div:hover {
+    background-color: #25252b;
+}
+
+.counter {
+    font-size: 12px;
+    border: 1px solid white;
+    /* padding: 6px; */
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--secondary);
+}
+
+#main-tasks {
+    margin-top: 100px;
 }
 
 main {
@@ -308,13 +346,14 @@ input[type="checkbox"] {
 }
 
 input[type="checkbox"]:checked {
-    background-color: grey;
+    background-color: var(--doneGreen);
 }
 
 
 #headers {
     border-bottom: 1px solid rgba(255, 255, 255, 0.295);
 }
+
 
 
 

@@ -1,58 +1,64 @@
-<!DOCTYPE html>
-<html lang="en">
+    <!DOCTYPE html>
+    <html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ToDoList</title>
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>ToDoList</title>
+    </head>
 
-<body>
-    <div id="sidebar">
-        <p>Today</p>
-        <p>Today</p>
-    </div>
-    <main>
-        <!-- <p>Working On: </p> -->
-        <div id="to-do-container">
-            <table>
-                <thead>
-                    <tr id="headers">
-                        <th class="checkbox"></th>
-                        <th>Name</th>
-                        <th>Due Date</th>
-                    </tr>
-
-                </thead>
-                <tbody>
-                    <!-- <tr>
-                        <td class="checkbox"><input type="checkbox"></td>
-                        <td>JavaScript</td>
-                        <td>Today</td>
-                        <td class="remove">x</td>
-                    </tr>
-                    <tr>
-                        <td class="checkbox"><input type="checkbox"></td>
-                        <td>JavaScript</td>
-                        <td>Today</td>
-                    </tr>
-                    <tr>
-                        <td class="checkbox"><input type="checkbox"></td>
-                        <td>JavaScript</td>
-                        <td>Today</td>
-                    </tr> -->
-                    <tr id="add-task">
-                        <td><input type="text" placeholder="Quickly add a task" id="textInput"></td>
-                        <p id="error-placeholder"></p>
-
-                        <td><input type="date"></td>
-                        <td id="button-td"><button>+</button></td>
-                    </tr>
-                </tbody>
-            </table>
+    <body>
+        <div id="sidebar">
+            <div id="main-tasks">
+                <p>Tasks</p>
+                <div class="counter">2</div>
+            </div>
+            <div id="completed-tasks">
+                <p>Completed</p>
+                <div class="counter">1</div>
+            </div>
         </div>
-    </main>
-</body>
+        <main>
+            <!-- <p>Working On: </p> -->
+            <div id="to-do-container">
+                <table>
+                    <thead>
+                        <tr id="headers">
+                            <th class="checkbox"></th>
+                            <th>Name</th>
+                            <th>Due Date</th>
+                        </tr>
 
-</html>
+                    </thead>
+                    <tbody>
+                        <!-- <tr>
+                            <td class="checkbox"><input type="checkbox"></td>
+                            <td>JavaScript</td>
+                            <td>Today</td>
+                            <td class="remove">x</td>
+                        </tr>
+                        <tr>
+                            <td class="checkbox"><input type="checkbox"></td>
+                            <td>JavaScript</td>
+                            <td>Today</td>
+                        </tr>
+                        <tr>
+                            <td class="checkbox"><input type="checkbox"></td>
+                            <td>JavaScript</td>
+                            <td>Today</td>
+                        </tr> -->
+                        <tr id="add-task">
+                            <td><input type="text" placeholder="Quickly add a task" id="textInput"></td>
+                            <p id="error-placeholder"></p>
+
+                            <td><input type="date"></td>
+                            <td id="button-td"><button>+</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </body>
+
+    </html>

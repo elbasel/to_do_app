@@ -10,24 +10,81 @@ const Ui = (function () {
         addButton: document.querySelector('button'),
         dateInput: document.querySelector('input[type="date"]'),
         errorOutput: document.querySelector('#error-placeholder'),
-        textInputContainer: document.querySelector('#add-task')
+        textInputContainer: document.querySelector('#add-task'),
+        mainTasksButton: document.querySelector('#main-tasks'),
+        completedTasksButton: document.querySelector('#completed-tasks'),
+
     }
+
 
 
     const colors = {
         errorRed: 'rgb(148, 26, 37)',
-        doneGreen: 'rgb(37, 156, 64)',
+        // doneGreen: 'rgb(37, 156, 64)',
+        doneGreen: 'var(--doneGreen)',
         secondaryColor: 'var(--secondary)',
 
     }
 
-    function sayHi() {
-        console.log('Ui Module working fine')
+
+    // Publishing functions
+    function completeToDo(e) {
+        const id = e.target.parentNode.parentNode.getAttribute('task-id')
+        removeToDo(id)
+        PubSub.publish('to-do-completed', id)
+
     }
 
-    // function scrollToBottom() {
-    //         domElements.tBody.scrollTop = domElements.tBody.scrollHeight;
-    // }
+    function removeButtonClicked(e) {
+        const id = e.target.parentNode.getAttribute('task-id')
+        removeToDo(id)
+        PubSub.publish('to-do-removed', id)
+
+    }
+    // ====== End publishing functions ======
+
+
+    function clearTaskView() {
+        domElements.tBody.innerHTML = '';
+    }
+
+    function appendAddTaskRow() {
+        const addTaskRow = document.createElement('tr')
+        addTaskRow.setAttribute('id', 'add-task')
+
+        const inputTd = document.createElement('td')
+        const input = document.createElement('input')
+        input.setAttribute('type', 'text')
+        input.setAttribute('placeholder', 'Quickly add a task')
+        input.setAttribute('id', 'textInput')
+
+        inputTd.appendChild(input)
+
+
+        const p = document.createElement('p')
+        p.setAttribute('id', 'error-placeholder')
+
+        const dateTd = document.createElement('td')
+        const dateInput = document.createElement('input')
+        dateInput.setAttribute('type', 'date')
+
+
+        const buttonTd = document.createElement('td')
+        buttonTd.setAttribute('id', 'button-td')
+
+
+        const addButton = document.createElement('button')
+        addButton.textContent = '+'
+
+        buttonTd.appendChild(addButton)
+
+        addTaskRow.appendChild(inputTd)
+        addTaskRow.appendChild(p)
+        addTaskRow.appendChild(dateTd)
+        addTaskRow.appendChild(buttonTd)
+
+        domElements.tBody.appendChild(addTaskRow)
+    }
 
     function outputError(error) {
         domElements.errorOutput.textContent = error
@@ -72,8 +129,8 @@ const Ui = (function () {
         setTimeout(() => domElements.tBody.removeChild(rowToRemove), animationSeconds * 1000)
 
         // domElements.tBody.removeChild(rowToRemove)
-        PubSub.publish('to-do-removed', id)
     }
+
 
 
     function appendToDo(id, name, dueDate) {
@@ -87,7 +144,7 @@ const Ui = (function () {
                 const checkbox = document.createElement('input')
                 checkbox.setAttribute('type', 'checkbox')
                 td.appendChild(checkbox)
-                td.addEventListener('change', (e) => removeToDo(e.target.parentNode.parentNode.getAttribute('task-id')))
+                td.addEventListener('change', (e) => completeToDo(e))
             }
             else if (i === 1) {
                 td.textContent = name
@@ -121,7 +178,8 @@ const Ui = (function () {
                 td.classList.add('remove')
                 td.textContent = 'x'
 
-                td.addEventListener('click', (e) => removeToDo(e.target.parentNode.getAttribute('task-id')))
+                td.addEventListener('click', (e) => removeButtonClicked(e))
+
             }
             row.appendChild(td)
         }
@@ -134,6 +192,8 @@ const Ui = (function () {
         domElements.textInput.value = ''
     }
 
+
+
     return {
         appendToDo,
         removeToDo,
@@ -143,7 +203,8 @@ const Ui = (function () {
         outputError,
         clearError,
         clearTextInput,
-        sayHi,
+        clearTaskView,
+        appendAddTaskRow,
         domElements
     }
 

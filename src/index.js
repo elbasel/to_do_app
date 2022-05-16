@@ -6,9 +6,7 @@ import Ui from './scripts/ui'
 const App
  = (function () {
 
-
-
-
+    let currentActiveView = 'main-tasks'
 
     function addTask(name, dueDate) {
         const newTask = ToDo.createToDo(name, dueDate)
@@ -45,15 +43,30 @@ const App
         }
     }
 
-    // function loadSaved() {
-    //     const saved = ToDo.getSavedData()
-    //     for (const item of saved) {
-    //         addTask(item.name, item.dueDate)
-    //     }
-    // }
+
+    function showCompletedTasks() {
+
+        if (currentActiveView === 'completed-tasks') return
+
+        currentActiveView = 'completed-tasks'
+        Ui.clearTaskView()
+        for (const task of ToDo.getCompletedTasks()) {
+            Ui.appendToDo(task.id, task.name, task.dueDate)
+        }
+    }
 
 
+    function showMainTasks() {
+        debugger
+        if (currentActiveView === 'main-tasks') return
 
+        currentActiveView = 'main-tasks'
+        Ui.clearTaskView()
+        Ui.appendAddTaskRow()
+        for (const task of ToDo.getCurrentMainTasks()) {
+            Ui.appendToDo(task.id, task.name, task.dueDate)
+        }
+    }
 
     function start() {
 
@@ -63,21 +76,30 @@ const App
         PubSub.subscribe('new-to-do', (msg, task) => Ui.appendToDo(task.id, task.name, task.dueDate))
         PubSub.subscribe('input', (msg, userInput) => validateTask(msg, userInput))
         PubSub.subscribe('to-do-removed', (msg, id) => ToDo.removeToDo(id))
+        PubSub.subscribe('to-do-completed', (msg, id) => ToDo.completeToDo(id))
+        PubSub.subscribe('completed-requested', (msg, data) => showCompletedTasks())
+        PubSub.subscribe('main-tasks-requested', (msg, data) => showMainTasks())
         // PubSub.subscribe('page-loaded', (msg, data) => loadSaved())
         Ui.domElements.addButton.addEventListener('click', () => PubSub.publish('add-button-clicked', Ui.getUserInput()))
         Ui.domElements.textInput.addEventListener('input', () => PubSub.publish('input', Ui.getUserInput()))
         Ui.domElements.textInput.addEventListener('keydown', (e) => PubSub.publish('text-input-keydown', e.key))
+        Ui.domElements.completedTasksButton.addEventListener('click', () => PubSub.publish('completed-requested'))
+        Ui.domElements.mainTasksButton.addEventListener('click', () => PubSub.publish('main-tasks-requested'))
         // window.addEventListener('load', PubSub.publish('page-loaded'))
         Ui.setDateInputDefaultValue()
+
+
+        //Testing Reasons
+
+        addTask('Test', new Date())
+        console.log(ToDo.getCurrentMainTasks())
     }
 
 
     return { start }
 
-})();
+})()
 
 
 App.start()
 
-
-export default Ui
