@@ -19,18 +19,33 @@ const ToDo = (function(){
     }
 
     function removeActiveToDo(id) {
-        toDoArray.splice(id, 1)
+        for (let i = 0; i < toDoArray.length; i++) {
+            if (toDoArray[i].id === id) {
+                toDoArray.splice(i, 1)
+            }
+        }
     }
     
     function removeCompletedToDo(id) {
-        doneArray.splice(id, 1)
+
+        for (let i = 0; i < doneArray.length; i++) {
+            if (doneArray[i].id === id) {
+                doneArray.splice(i, 1)
+            }
+        }
+
     }
 
     function completeToDo(id) {
-        debugger
-        const doneToDo = toDoArray.splice(id, 1)[0]
-        doneArray.push(doneToDo)
+
         
+        for (let i = 0; i < toDoArray.length; i++) {
+            if (toDoArray[i].id === id) {
+                doneArray.push(toDoArray.splice(i, 1)[0])
+            }
+        }
+
+
     }
 
 

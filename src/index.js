@@ -75,9 +75,9 @@ const App
             Ui.appendToDo(task.id, task.name, task.dueDate, true)
         }
 
-        // Ui.domElements.tBody.style.height = '100%'
-        // Ui.domElements.tableContainer.style.paddingBottom = '0px'
-        // Ui.domElements.tBody.style.paddingBottom = '16px'
+        Ui.domElements.tBody.style.height = '100%'
+        Ui.domElements.tableContainer.style.paddingBottom = '0px'
+        Ui.domElements.tBody.style.paddingBottom = '16px'
     }
 
 
@@ -90,6 +90,11 @@ const App
         for (const task of ToDo.getCurrentMainTasks()) {
             Ui.appendToDo(task.id, task.name, task.dueDate)
         }
+
+        Ui.domElements.tBody.style.height = '60%'
+        Ui.domElements.tableContainer.style.paddingBottom = '2rem'
+        Ui.domElements.tBody.style.padddingBottom = '0px'
+
     }
 
     function start() {
@@ -99,8 +104,8 @@ const App
         PubSub.subscribe('add-button-clicked', (msg, userInput) => validateTask(msg, userInput))
         PubSub.subscribe('new-to-do', (msg, task) => Ui.appendToDo(task.id, task.name, task.dueDate))
         PubSub.subscribe('input', (msg, userInput) => validateTask(msg, userInput))
-        PubSub.subscribe('to-do-removed', (msg, id) => removeToDo(id))
-        PubSub.subscribe('to-do-completed', (msg, id) => ToDo.completeToDo(id))
+        PubSub.subscribe('to-do-removed', (msg, id) => removeToDo(+id))
+        PubSub.subscribe('to-do-completed', (msg, id) => ToDo.completeToDo(+id))
         PubSub.subscribe('completed-requested', (msg, data) => showCompletedTasks())
         PubSub.subscribe('main-tasks-requested', (msg, data) => showMainTasks())
         
@@ -121,7 +126,18 @@ const App
         //Testing Reasons
 
         addTask('Test', new Date())
+        addTask('Test', new Date())
+        addTask('Test', new Date())
+        addTask('Test', new Date())
+        addTask('Test', new Date())
+        addTask('Test', new Date())
+        addTask('Test', new Date())
+        addTask('Test', new Date())
+        addTask('Test', new Date())
+        addTask('Test', new Date())
+
     }
+
 
 
     return { start }

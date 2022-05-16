@@ -22046,9 +22046,9 @@ const App
             _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].appendToDo(task.id, task.name, task.dueDate, true)
         }
 
-        // Ui.domElements.tBody.style.height = '100%'
-        // Ui.domElements.tableContainer.style.paddingBottom = '0px'
-        // Ui.domElements.tBody.style.paddingBottom = '16px'
+        _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.tBody.style.height = '100%'
+        _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.tableContainer.style.paddingBottom = '0px'
+        _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.tBody.style.paddingBottom = '16px'
     }
 
 
@@ -22061,6 +22061,11 @@ const App
         for (const task of _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].getCurrentMainTasks()) {
             _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].appendToDo(task.id, task.name, task.dueDate)
         }
+
+        _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.tBody.style.height = '60%'
+        _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.tableContainer.style.paddingBottom = '2rem'
+        _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.tBody.style.padddingBottom = '0px'
+
     }
 
     function start() {
@@ -22070,8 +22075,8 @@ const App
         pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('add-button-clicked', (msg, userInput) => validateTask(msg, userInput))
         pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('new-to-do', (msg, task) => _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].appendToDo(task.id, task.name, task.dueDate))
         pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('input', (msg, userInput) => validateTask(msg, userInput))
-        pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('to-do-removed', (msg, id) => removeToDo(id))
-        pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('to-do-completed', (msg, id) => _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].completeToDo(id))
+        pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('to-do-removed', (msg, id) => removeToDo(+id))
+        pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('to-do-completed', (msg, id) => _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].completeToDo(+id))
         pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('completed-requested', (msg, data) => showCompletedTasks())
         pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('main-tasks-requested', (msg, data) => showMainTasks())
         
@@ -22092,7 +22097,18 @@ const App
         //Testing Reasons
 
         addTask('Test', new Date())
+        addTask('Test', new Date())
+        addTask('Test', new Date())
+        addTask('Test', new Date())
+        addTask('Test', new Date())
+        addTask('Test', new Date())
+        addTask('Test', new Date())
+        addTask('Test', new Date())
+        addTask('Test', new Date())
+        addTask('Test', new Date())
+
     }
+
 
 
     return { start }
@@ -22138,18 +22154,33 @@ const ToDo = (function(){
     }
 
     function removeActiveToDo(id) {
-        toDoArray.splice(id, 1)
+        for (let i = 0; i < toDoArray.length; i++) {
+            if (toDoArray[i].id === id) {
+                toDoArray.splice(i, 1)
+            }
+        }
     }
     
     function removeCompletedToDo(id) {
-        doneArray.splice(id, 1)
+
+        for (let i = 0; i < doneArray.length; i++) {
+            if (doneArray[i].id === id) {
+                doneArray.splice(i, 1)
+            }
+        }
+
     }
 
     function completeToDo(id) {
-        debugger
-        const doneToDo = toDoArray.splice(id, 1)[0]
-        doneArray.push(doneToDo)
+
         
+        for (let i = 0; i < toDoArray.length; i++) {
+            if (toDoArray[i].id === id) {
+                doneArray.push(toDoArray.splice(i, 1)[0])
+            }
+        }
+
+
     }
 
 
@@ -22258,6 +22289,7 @@ const Ui = (function () {
     }
 
     function appendAddTaskRow() {
+
         const addTaskRow = document.createElement('tr')
         addTaskRow.setAttribute('id', 'add-task')
 
@@ -22276,6 +22308,8 @@ const Ui = (function () {
         const dateTd = document.createElement('td')
         const dateInput = document.createElement('input')
         dateInput.setAttribute('type', 'date')
+
+        dateTd.appendChild(dateInput)
 
 
         const buttonTd = document.createElement('td')
@@ -22299,6 +22333,8 @@ const Ui = (function () {
         
 
         domElements.tBody.appendChild(addTaskRow)
+
+        setDateInputDefaultValue()
     }
 
     function outputError(error) {
@@ -22316,7 +22352,8 @@ const Ui = (function () {
         if (value === null) {
             value = moment__WEBPACK_IMPORTED_MODULE_0___default()().format('YYYY-MM-DD')
         }
-        domElements.dateInput.value = value
+
+        document.querySelector('input[type="date"]').value = value
     }
 
     function getUserInput() {

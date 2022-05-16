@@ -56,6 +56,7 @@ const Ui = (function () {
     }
 
     function appendAddTaskRow() {
+
         const addTaskRow = document.createElement('tr')
         addTaskRow.setAttribute('id', 'add-task')
 
@@ -74,6 +75,8 @@ const Ui = (function () {
         const dateTd = document.createElement('td')
         const dateInput = document.createElement('input')
         dateInput.setAttribute('type', 'date')
+
+        dateTd.appendChild(dateInput)
 
 
         const buttonTd = document.createElement('td')
@@ -97,6 +100,8 @@ const Ui = (function () {
         
 
         domElements.tBody.appendChild(addTaskRow)
+
+        setDateInputDefaultValue()
     }
 
     function outputError(error) {
@@ -114,7 +119,8 @@ const Ui = (function () {
         if (value === null) {
             value = moment().format('YYYY-MM-DD')
         }
-        domElements.dateInput.value = value
+
+        document.querySelector('input[type="date"]').value = value
     }
 
     function getUserInput() {
