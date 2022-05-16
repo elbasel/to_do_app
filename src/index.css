@@ -9,7 +9,7 @@
     --blue: #004daa;
     --caption: #e8e6e3;
     --montserrat: 'Montserrat', sans-serif;
-    --doneGreen: rgba(0, 128, 0, 0.274);
+    --doneGreen: rgba(0, 128, 0, 0.301);
 }
 
 /* ========== END Dark Mode Colors ========== */
@@ -313,13 +313,13 @@ tbody>tr {
 
 td.remove {
     display: block;
-    /* width: 10px; */
+
     flex: 0;
-    font-size: 16px;
-    color: rgba(255, 255, 255, 0.214);
-    /* border: 1px solid white; */
-    padding: 2px;
+    font-size: 22px;
+    color: rgba(255, 255, 255, 0.214);    
     outline: none;
+
+    
 }
 
 /* td.remove:active {
@@ -357,8 +357,18 @@ input[type="checkbox"]:checked {
 
 
 
+tbody > tr>td:nth-child(2) {
+    --w: 320px;
+    --max-w: 310px;
+    display: block;
+    text-align: center;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: var(--max-w);
+    margin-left: calc(var(--w) - var(--max-w));
 
-
+}
 
 @keyframes tracking-in-expand {
     0% {

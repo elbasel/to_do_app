@@ -1,18 +1,24 @@
 import moment from "moment";
 import PubSub from "pubsub-js";
 
+// PubSub emiiters defined here:
+    //to-do-completed => task-id
+    //to-do-removed => task-id
 
 const Ui = (function () {
 
     const domElements = {
         tBody: document.querySelector('tbody'),
         textInput: document.querySelector('#textInput'),
-        addButton: document.querySelector('button'),
+        addButton: document.querySelector('#add-button'),
         dateInput: document.querySelector('input[type="date"]'),
         errorOutput: document.querySelector('#error-placeholder'),
         textInputContainer: document.querySelector('#add-task'),
         mainTasksButton: document.querySelector('#main-tasks'),
         completedTasksButton: document.querySelector('#completed-tasks'),
+        mainTasksCounter: document.querySelector('#main-tasks-counter'),
+        completedTasksCounter: document.querySelector('#completed-tasks-counter'),
+        tableContainer: document.querySelector('#to-do-container')
 
     }
 
@@ -45,6 +51,7 @@ const Ui = (function () {
 
 
     function clearTaskView() {
+
         domElements.tBody.innerHTML = '';
     }
 
@@ -74,6 +81,7 @@ const Ui = (function () {
 
 
         const addButton = document.createElement('button')
+        addButton.setAttribute('id', 'add-button')
         addButton.textContent = '+'
 
         buttonTd.appendChild(addButton)
@@ -82,6 +90,11 @@ const Ui = (function () {
         addTaskRow.appendChild(p)
         addTaskRow.appendChild(dateTd)
         addTaskRow.appendChild(buttonTd)
+
+        addButton.addEventListener('click', () => PubSub.publish('add-button-clicked', getUserInput()))
+        input.addEventListener('input', () => PubSub.publish('input', getUserInput()))
+        input.addEventListener('keydown', (e) => PubSub.publish('text-input-keydown', e.key))
+        
 
         domElements.tBody.appendChild(addTaskRow)
     }
@@ -106,14 +119,14 @@ const Ui = (function () {
 
     function getUserInput() {
         return {
-            name: domElements.textInput.value,
+            name: document.querySelector('#textInput').value,
             dueDate: new Date(domElements.dateInput.value)
         }
     }
 
     function removeToDo(id) {
         // How long the animation should run
-        const animationSeconds = 1;
+        const animationSeconds = 0.6;
         const rowToRemove = document.querySelector(`tr[task-id="${id}"]`)
 
         // rowToRemove.setAttribute('style', `animation: scale-out-center ${animationSeconds}s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;`)
@@ -126,24 +139,25 @@ const Ui = (function () {
 
         rowToRemove.setAttribute('style', removeAnimation + '; ' + borderColor)
         // rowToRemove.style.animation = removeAnimation
-        setTimeout(() => domElements.tBody.removeChild(rowToRemove), animationSeconds * 1000)
+        setTimeout(() => domElements.tBody.removeChild(rowToRemove), (animationSeconds - 0.2) * 1000)
 
         // domElements.tBody.removeChild(rowToRemove)
     }
 
 
 
-    function appendToDo(id, name, dueDate) {
+    function appendToDo(id, name, dueDate, skipCheckMark=false) {
 
         const row = document.createElement('tr')
         row.setAttribute('task-id', id)
         for (let i = 0; i < 4; i++) {
             let td = document.createElement('td')
             if (i === 0) {
+
                 td.classList.add('checkbox')
                 const checkbox = document.createElement('input')
                 checkbox.setAttribute('type', 'checkbox')
-                td.appendChild(checkbox)
+                if (!skipCheckMark) td.appendChild(checkbox)
                 td.addEventListener('change', (e) => completeToDo(e))
             }
             else if (i === 1) {
@@ -162,7 +176,7 @@ const Ui = (function () {
                             td.textContent = 'Tommorow'
                             break
                         case 2:
-                            td.textContent = 'Day After Tommrow'
+                            td.textContent = '2 Days from today'
                             break
                         default:
                             td.textContent = moment(dueDate).format('MMMM Do YYYY')
@@ -174,7 +188,7 @@ const Ui = (function () {
 
 
             }
-            else {
+            else if (i === 3) {
                 td.classList.add('remove')
                 td.textContent = 'x'
 
@@ -189,7 +203,7 @@ const Ui = (function () {
     }
 
     function clearTextInput() {
-        domElements.textInput.value = ''
+        document.querySelector('#textInput').value = ''
     }
 
 

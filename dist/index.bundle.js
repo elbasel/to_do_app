@@ -21979,6 +21979,21 @@ const App
 
     let currentActiveView = 'main-tasks'
 
+    function removeToDo(id) {
+
+        if (currentActiveView === 'main-tasks') {
+            _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].removeActiveToDo(id)
+        }
+        else if (currentActiveView === 'completed-tasks') {
+            _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].removeCompletedToDo(id)
+        }
+    }
+
+    function updateCounter() {
+        _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.mainTasksCounter.textContent = _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].getCurrentMainTasks().length
+        _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.completedTasksCounter.textContent = _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].getCompletedTasks().length
+    }
+
     function addTask(name, dueDate) {
         const newTask = _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].createToDo(name, dueDate)
         _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].clearTextInput()
@@ -21986,10 +22001,14 @@ const App
     }
 
     function validateTask(msg, userInput) {
+
         const name = userInput.name
         const dueDate = userInput.dueDate
         _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.errorOutput.style.display = 'none'
-        if (name.length >= 1 && name.length <= 20) {
+        
+        // if (name.length >= 1 && name.length <= 20) {
+        if (name.length >= 1) {
+
             if (msg === 'add-button-clicked') {
                 addTask(name, dueDate)
             }
@@ -22017,18 +22036,23 @@ const App
 
     function showCompletedTasks() {
 
+
         if (currentActiveView === 'completed-tasks') return
 
         currentActiveView = 'completed-tasks'
         _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].clearTaskView()
         for (const task of _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].getCompletedTasks()) {
-            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].appendToDo(task.id, task.name, task.dueDate)
+
+            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].appendToDo(task.id, task.name, task.dueDate, true)
         }
+
+        // Ui.domElements.tBody.style.height = '100%'
+        // Ui.domElements.tableContainer.style.paddingBottom = '0px'
+        // Ui.domElements.tBody.style.paddingBottom = '16px'
     }
 
 
     function showMainTasks() {
-        debugger
         if (currentActiveView === 'main-tasks') return
 
         currentActiveView = 'main-tasks'
@@ -22046,10 +22070,15 @@ const App
         pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('add-button-clicked', (msg, userInput) => validateTask(msg, userInput))
         pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('new-to-do', (msg, task) => _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].appendToDo(task.id, task.name, task.dueDate))
         pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('input', (msg, userInput) => validateTask(msg, userInput))
-        pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('to-do-removed', (msg, id) => _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].removeToDo(id))
+        pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('to-do-removed', (msg, id) => removeToDo(id))
         pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('to-do-completed', (msg, id) => _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].completeToDo(id))
         pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('completed-requested', (msg, data) => showCompletedTasks())
         pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('main-tasks-requested', (msg, data) => showMainTasks())
+        
+        pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('to-do-removed', (msg, id) => updateCounter())
+        pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('to-do-completed', (msg, id) => updateCounter())
+        pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('new-to-do', (msg, id) => updateCounter())
+
         // PubSub.subscribe('page-loaded', (msg, data) => loadSaved())
         _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.addButton.addEventListener('click', () => pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().publish('add-button-clicked', _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].getUserInput()))
         _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.textInput.addEventListener('input', () => pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().publish('input', _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].getUserInput()))
@@ -22063,7 +22092,6 @@ const App
         //Testing Reasons
 
         addTask('Test', new Date())
-        console.log(_scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].getCurrentMainTasks())
     }
 
 
@@ -22094,6 +22122,8 @@ const ToDo = (function(){
     const toDoArray = []
     const doneArray = []
 
+    let idCounter = 0;
+
     const proto = {
         type: 'to_do'
     }
@@ -22102,19 +22132,23 @@ const ToDo = (function(){
 
     function createToDo(name, dueDate) {
         //dueDate is a javascript Date Object
-        const newObj = Object.assign(Object.create(proto), {id: toDoArray.length, name, dueDate})
+        const newObj = Object.assign(Object.create(proto), {id: idCounter++, name, dueDate})
         toDoArray.push(newObj)
         return newObj
     }
 
-    function removeToDo(id) {
+    function removeActiveToDo(id) {
         toDoArray.splice(id, 1)
+    }
+    
+    function removeCompletedToDo(id) {
+        doneArray.splice(id, 1)
     }
 
     function completeToDo(id) {
-        const doneToDo = toDoArray.splice(id, 1)
+        debugger
+        const doneToDo = toDoArray.splice(id, 1)[0]
         doneArray.push(doneToDo)
-        console.log({doneArray})
         
     }
 
@@ -22136,7 +22170,8 @@ const ToDo = (function(){
 
     return {
         createToDo,
-        removeToDo,
+        removeActiveToDo,
+        removeCompletedToDo,
         completeToDo,
         getCompletedTasks,
         getCurrentMainTasks,
@@ -22168,18 +22203,24 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+// PubSub emiiters defined here:
+    //to-do-completed => task-id
+    //to-do-removed => task-id
 
 const Ui = (function () {
 
     const domElements = {
         tBody: document.querySelector('tbody'),
         textInput: document.querySelector('#textInput'),
-        addButton: document.querySelector('button'),
+        addButton: document.querySelector('#add-button'),
         dateInput: document.querySelector('input[type="date"]'),
         errorOutput: document.querySelector('#error-placeholder'),
         textInputContainer: document.querySelector('#add-task'),
         mainTasksButton: document.querySelector('#main-tasks'),
         completedTasksButton: document.querySelector('#completed-tasks'),
+        mainTasksCounter: document.querySelector('#main-tasks-counter'),
+        completedTasksCounter: document.querySelector('#completed-tasks-counter'),
+        tableContainer: document.querySelector('#to-do-container')
 
     }
 
@@ -22212,6 +22253,7 @@ const Ui = (function () {
 
 
     function clearTaskView() {
+
         domElements.tBody.innerHTML = '';
     }
 
@@ -22241,6 +22283,7 @@ const Ui = (function () {
 
 
         const addButton = document.createElement('button')
+        addButton.setAttribute('id', 'add-button')
         addButton.textContent = '+'
 
         buttonTd.appendChild(addButton)
@@ -22249,6 +22292,11 @@ const Ui = (function () {
         addTaskRow.appendChild(p)
         addTaskRow.appendChild(dateTd)
         addTaskRow.appendChild(buttonTd)
+
+        addButton.addEventListener('click', () => pubsub_js__WEBPACK_IMPORTED_MODULE_1___default().publish('add-button-clicked', getUserInput()))
+        input.addEventListener('input', () => pubsub_js__WEBPACK_IMPORTED_MODULE_1___default().publish('input', getUserInput()))
+        input.addEventListener('keydown', (e) => pubsub_js__WEBPACK_IMPORTED_MODULE_1___default().publish('text-input-keydown', e.key))
+        
 
         domElements.tBody.appendChild(addTaskRow)
     }
@@ -22273,14 +22321,14 @@ const Ui = (function () {
 
     function getUserInput() {
         return {
-            name: domElements.textInput.value,
+            name: document.querySelector('#textInput').value,
             dueDate: new Date(domElements.dateInput.value)
         }
     }
 
     function removeToDo(id) {
         // How long the animation should run
-        const animationSeconds = 1;
+        const animationSeconds = 0.6;
         const rowToRemove = document.querySelector(`tr[task-id="${id}"]`)
 
         // rowToRemove.setAttribute('style', `animation: scale-out-center ${animationSeconds}s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;`)
@@ -22293,24 +22341,25 @@ const Ui = (function () {
 
         rowToRemove.setAttribute('style', removeAnimation + '; ' + borderColor)
         // rowToRemove.style.animation = removeAnimation
-        setTimeout(() => domElements.tBody.removeChild(rowToRemove), animationSeconds * 1000)
+        setTimeout(() => domElements.tBody.removeChild(rowToRemove), (animationSeconds - 0.2) * 1000)
 
         // domElements.tBody.removeChild(rowToRemove)
     }
 
 
 
-    function appendToDo(id, name, dueDate) {
+    function appendToDo(id, name, dueDate, skipCheckMark=false) {
 
         const row = document.createElement('tr')
         row.setAttribute('task-id', id)
         for (let i = 0; i < 4; i++) {
             let td = document.createElement('td')
             if (i === 0) {
+
                 td.classList.add('checkbox')
                 const checkbox = document.createElement('input')
                 checkbox.setAttribute('type', 'checkbox')
-                td.appendChild(checkbox)
+                if (!skipCheckMark) td.appendChild(checkbox)
                 td.addEventListener('change', (e) => completeToDo(e))
             }
             else if (i === 1) {
@@ -22329,7 +22378,7 @@ const Ui = (function () {
                             td.textContent = 'Tommorow'
                             break
                         case 2:
-                            td.textContent = 'Day After Tommrow'
+                            td.textContent = '2 Days from today'
                             break
                         default:
                             td.textContent = moment__WEBPACK_IMPORTED_MODULE_0___default()(dueDate).format('MMMM Do YYYY')
@@ -22341,7 +22390,7 @@ const Ui = (function () {
 
 
             }
-            else {
+            else if (i === 3) {
                 td.classList.add('remove')
                 td.textContent = 'x'
 
@@ -22356,7 +22405,7 @@ const Ui = (function () {
     }
 
     function clearTextInput() {
-        domElements.textInput.value = ''
+        document.querySelector('#textInput').value = ''
     }
 
 

@@ -12,15 +12,14 @@
         <div id="sidebar">
             <div id="main-tasks">
                 <p>Tasks</p>
-                <div class="counter">2</div>
+                <div class="counter" id="main-tasks-counter">0</div>
             </div>
             <div id="completed-tasks">
                 <p>Completed</p>
-                <div class="counter">1</div>
+                <div class="counter" id="completed-tasks-counter">0</div>
             </div>
         </div>
         <main>
-            <!-- <p>Working On: </p> -->
             <div id="to-do-container">
                 <table>
                     <thead>
@@ -53,7 +52,7 @@
                             <p id="error-placeholder"></p>
 
                             <td><input type="date"></td>
-                            <td id="button-td"><button>+</button></td>
+                            <td id="button-td"><button id="add-button">+</button></td>
                         </tr>
                     </tbody>
                 </table>
