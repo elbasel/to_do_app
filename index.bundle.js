@@ -22263,7 +22263,7 @@ const Ui = (function () {
 
     function removeButtonClicked(e) {
         const id = e.target.parentNode.getAttribute('task-id')
-        removeToDo(id)
+        removeToDo(id, 'delete')
         pubsub_js__WEBPACK_IMPORTED_MODULE_1___default().publish('to-do-removed', id)
 
     }
@@ -22350,20 +22350,26 @@ const Ui = (function () {
         }
     }
 
-    function removeToDo(id) {
+    function removeToDo(id, animation='complete') {
         // How long the animation should run
         const animationSeconds = 0.6;
         const rowToRemove = document.querySelector(`tr[task-id="${id}"]`)
 
 
-        // Easy access to animation
-        const borderColor = `border-color: ${colors.doneGreen}`
+        // Animation varibles
+        let borderColor = `border-color: ${colors.doneGreen}`
         let removeAnimation = "animation: slide-out-right 0.5s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;"
+
+        if (animation === 'delete') {
+            borderColor = `border-color: ${colors.errorRed}`
+            removeAnimation = '	animation: slide-out-left 0.5s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;'
+        }
+
         removeAnimation = removeAnimation.replace(/ \d.\ds /, ' ' + animationSeconds + 's ')
-
         rowToRemove.setAttribute('style', removeAnimation + '; ' + borderColor)
-        setTimeout(() => domElements.tBody.removeChild(rowToRemove), (animationSeconds - 0.2) * 1000)
 
+
+        setTimeout(() => domElements.tBody.removeChild(rowToRemove), (animationSeconds - 0.2) * 1000)
     }
 
 
