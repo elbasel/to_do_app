@@ -2,8 +2,8 @@ import moment from "moment";
 import PubSub from "pubsub-js";
 
 // PubSub emiiters defined here:
-    //to-do-completed => task-id
-    //to-do-removed => task-id
+//to-do-completed => task-id
+//to-do-removed => task-id
 
 const Ui = (function () {
 
@@ -97,7 +97,7 @@ const Ui = (function () {
         addButton.addEventListener('click', () => PubSub.publish('add-button-clicked', getUserInput()))
         input.addEventListener('input', () => PubSub.publish('input', getUserInput()))
         input.addEventListener('keydown', (e) => PubSub.publish('text-input-keydown', e.key))
-        
+
 
         domElements.tBody.appendChild(addTaskRow)
 
@@ -135,24 +135,20 @@ const Ui = (function () {
         const animationSeconds = 0.6;
         const rowToRemove = document.querySelector(`tr[task-id="${id}"]`)
 
-        // rowToRemove.setAttribute('style', `animation: scale-out-center ${animationSeconds}s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;`)
 
         // Easy access to animation
-        // rowToRemove.style.borderColor = colors.doneGreen
         const borderColor = `border-color: ${colors.doneGreen}`
         let removeAnimation = "animation: slide-out-right 0.5s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;"
         removeAnimation = removeAnimation.replace(/ \d.\ds /, ' ' + animationSeconds + 's ')
 
         rowToRemove.setAttribute('style', removeAnimation + '; ' + borderColor)
-        // rowToRemove.style.animation = removeAnimation
         setTimeout(() => domElements.tBody.removeChild(rowToRemove), (animationSeconds - 0.2) * 1000)
 
-        // domElements.tBody.removeChild(rowToRemove)
     }
 
 
 
-    function appendToDo(id, name, dueDate, skipCheckMark=false) {
+    function appendToDo(id, name, dueDate, skipCheckMark = false) {
 
         const row = document.createElement('tr')
         row.setAttribute('task-id', id)
@@ -217,7 +213,6 @@ const Ui = (function () {
     return {
         appendToDo,
         removeToDo,
-        // scrollToBottom,
         setDateInputDefaultValue,
         getUserInput,
         outputError,

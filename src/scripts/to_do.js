@@ -1,4 +1,4 @@
-const ToDo = (function(){
+const ToDo = (function () {
 
     const toDoArray = []
     const doneArray = []
@@ -13,7 +13,7 @@ const ToDo = (function(){
 
     function createToDo(name, dueDate) {
         //dueDate is a javascript Date Object
-        const newObj = Object.assign(Object.create(proto), {id: idCounter++, name, dueDate})
+        const newObj = Object.assign(Object.create(proto), { id: idCounter++, name, dueDate })
         toDoArray.push(newObj)
         return newObj
     }
@@ -25,7 +25,7 @@ const ToDo = (function(){
             }
         }
     }
-    
+
     function removeCompletedToDo(id) {
 
         for (let i = 0; i < doneArray.length; i++) {
@@ -38,7 +38,7 @@ const ToDo = (function(){
 
     function completeToDo(id) {
 
-        
+
         for (let i = 0; i < toDoArray.length; i++) {
             if (toDoArray[i].id === id) {
                 doneArray.push(toDoArray.splice(i, 1)[0])
