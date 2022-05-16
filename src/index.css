@@ -394,3 +394,14 @@ tbody>tr>td:nth-child(2) {
         opacity: 0;
     }
 }
+
+@keyframes slide-out-left {
+    0% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(-1000px);
+      opacity: 0;
+    }
+  }
