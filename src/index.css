@@ -340,12 +340,15 @@ td.remove {
     font-size: 22px;
     color: rgba(255, 255, 255, 0.214);
     outline: none;
+    cursor: pointer;
+    
 
 
 }
 
 
 td.edit {
+    cursor: pointer;
     display: block;
     flex: 0;
     font: 22px;
