@@ -22160,6 +22160,8 @@ const App
             pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('input', (msg, userInput) => validateTask(msg, userInput))
             pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('to-do-removed', (msg, id) => removeToDo(+id))
             pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('to-do-completed', (msg, id) => _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].completeToDo(+id))
+            pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('to-do-uncompleted', (msg, id) => _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].unCompleteToDo(+id))
+
             pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('completed-requested', (msg, data) => showCompletedTasks())
             pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('main-tasks-requested', (msg, data) => showMainTasks())
             pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('edit-button-clicked', (msg, id) => editTaskEventHandler(+id))
@@ -22168,11 +22170,13 @@ const App
 
             pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('to-do-removed', (msg, id) => updateCounter())
             pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('to-do-completed', (msg, id) => updateCounter())
+            pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('to-do-uncompleted', (msg, id) => updateCounter())
             pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('new-to-do', (msg, id) => updateCounter())
 
 
             pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('to-do-removed', (msg, id) => _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].saveData())
             pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('to-do-completed', (msg, id) => _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].saveData())
+            pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('to-do-uncompleted', (msg, id) => _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].saveData())
             pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('new-to-do', (msg, id) => _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].saveData())
             pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('task-edited', (msg, newTask) => _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].saveData())
 
@@ -22283,6 +22287,14 @@ const ToDo = (function () {
     }
 
 
+    function unCompleteToDo(id) {
+        for (let i = 0; i < doneArray.length; i++) {
+            if (doneArray[i].id === id) {
+                toDoArray.push(doneArray.splice(i, 1)[0])
+            }
+        }
+    }
+
     function getCompletedTasks() {
         return doneArray
     }
@@ -22343,6 +22355,7 @@ const ToDo = (function () {
         loadCompletedTasks,
         getToDoById,
         editTask,
+        unCompleteToDo,
         // saveData,
         // getSavedData
     }
@@ -22417,6 +22430,13 @@ const Ui = (function () {
         removeToDo(id)
         pubsub_js__WEBPACK_IMPORTED_MODULE_1___default().publish('to-do-completed', id)
 
+    }
+
+    function unCompleteToDo(e) {
+        const id = e.target.parentNode.parentNode.getAttribute('task-id')
+        removeToDo(id, 'fade')
+        pubsub_js__WEBPACK_IMPORTED_MODULE_1___default().publish('to-do-uncompleted', id)
+        
     }
 
     function removeButtonClicked(e) {
@@ -22636,10 +22656,18 @@ const Ui = (function () {
                 td.classList.add('checkbox')
                 const checkbox = document.createElement('input')
                 checkbox.setAttribute('type', 'checkbox')
+
                 if (!skipCheckMark) {
-                    td.appendChild(checkbox)
+                    
                     td.addEventListener('change', (e) => completeToDo(e))
                 }
+                else {
+                    checkbox.checked = true
+                    td.addEventListener('change', (e) => unCompleteToDo(e))
+                    row.classList.add('strikeout')
+                }
+                td.appendChild(checkbox)
+
             }
             else if (i === 1) {
                 td.textContent = name
