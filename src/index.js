@@ -180,6 +180,36 @@ const App
         }
 
 
+        function filterTasks() {
+            const today = new Date()
+            const filterValue = Ui.domElements.dateFilter.value
+
+
+            Ui.clearTaskView()
+            Ui.appendAddTaskRow()
+
+            if (filterValue === 'Today') {
+
+                for (const task of ToDo.getCurrentMainTasks()) {
+                    const sameDay = task.dueDate.getDate() === today.getDate()
+                    const sameMonth = task.dueDate.getMonth() === today.getMonth()
+                    const sameYear = task.dueDate.getYear() === today.getYear()
+
+
+                    if (sameDay && sameMonth && sameYear) {
+                        Ui.appendToDo(task.id, task.name, task.dueDate)
+                    }
+
+                }
+
+            }
+            else if (filterValue === 'All') {
+                for (const task of ToDo.getCurrentMainTasks()) {
+                    Ui.appendToDo(task.id, task.name, task.dueDate)
+                }
+            }
+        }
+
         function start() {
 
 
@@ -220,6 +250,7 @@ const App
             Ui.domElements.taskEditTextArea.addEventListener('input', (e) => PubSub.publish('task-edited', Ui.getTaskBeingEdited()))
             Ui.domElements.taskEditDoneButton.addEventListener('click', () => editMenuDoneButtonClickHandler())
             Ui.domElements.taskEditDeleteButton.addEventListener('click', () => editMenueDeleteButtonClickHandler())
+            Ui.domElements.dateFilter.addEventListener('change', (e) => filterTasks())
             window.addEventListener('keydown', (e) => keyPressEventHandler(e))
             Ui.domElements.formContainer.addEventListener('click', (e) => {
                 if (e.target !== e.currentTarget) return

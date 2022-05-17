@@ -25,7 +25,8 @@ const Ui = (function () {
         taskEditDatePicker: document.querySelector('#date-editor'),
         taskEditTextArea: document.querySelector('#task-notes'),
         taskEditDeleteButton: document.querySelector('#delete-button'),
-        taskEditMenu: document.querySelector('#edit-task-form')
+        taskEditMenu: document.querySelector('#edit-task-form'),
+        dateFilter: document.querySelector("#date-filter > select"),
 
 
     }

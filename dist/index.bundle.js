@@ -22151,6 +22151,36 @@ const App
         }
 
 
+        function filterTasks() {
+            const today = new Date()
+            const filterValue = _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.dateFilter.value
+
+
+            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].clearTaskView()
+            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].appendAddTaskRow()
+
+            if (filterValue === 'Today') {
+
+                for (const task of _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].getCurrentMainTasks()) {
+                    const sameDay = task.dueDate.getDate() === today.getDate()
+                    const sameMonth = task.dueDate.getMonth() === today.getMonth()
+                    const sameYear = task.dueDate.getYear() === today.getYear()
+
+
+                    if (sameDay && sameMonth && sameYear) {
+                        _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].appendToDo(task.id, task.name, task.dueDate)
+                    }
+
+                }
+
+            }
+            else if (filterValue === 'All') {
+                for (const task of _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].getCurrentMainTasks()) {
+                    _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].appendToDo(task.id, task.name, task.dueDate)
+                }
+            }
+        }
+
         function start() {
 
 
@@ -22191,6 +22221,7 @@ const App
             _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.taskEditTextArea.addEventListener('input', (e) => pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().publish('task-edited', _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].getTaskBeingEdited()))
             _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.taskEditDoneButton.addEventListener('click', () => editMenuDoneButtonClickHandler())
             _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.taskEditDeleteButton.addEventListener('click', () => editMenueDeleteButtonClickHandler())
+            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.dateFilter.addEventListener('change', (e) => filterTasks())
             window.addEventListener('keydown', (e) => keyPressEventHandler(e))
             _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.formContainer.addEventListener('click', (e) => {
                 if (e.target !== e.currentTarget) return
@@ -22408,7 +22439,8 @@ const Ui = (function () {
         taskEditDatePicker: document.querySelector('#date-editor'),
         taskEditTextArea: document.querySelector('#task-notes'),
         taskEditDeleteButton: document.querySelector('#delete-button'),
-        taskEditMenu: document.querySelector('#edit-task-form')
+        taskEditMenu: document.querySelector('#edit-task-form'),
+        dateFilter: document.querySelector("#date-filter > select"),
 
 
     }
