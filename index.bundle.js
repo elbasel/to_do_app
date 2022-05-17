@@ -21994,8 +21994,8 @@ const App
             _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.completedTasksCounter.textContent = _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].getCompletedTasks().length
         }
 
-        function addTask(name, dueDate) {
-            const newTask = _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].createToDo(name, dueDate)
+        function addTask(name, dueDate, notes) {
+            const newTask = _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].createToDo(name, dueDate, notes)
             _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].clearTextInput()
             pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().publish('new-to-do', newTask)
         }
@@ -22066,7 +22066,90 @@ const App
             _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.tableContainer.style.paddingBottom = '2rem'
             _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.tBody.style.padddingBottom = '0px'
 
+            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].setDateInputDefaultValue()
         }
+
+
+        function loadSavedData() {
+            let savedActiveTodos = localStorage.getItem('active-to-dos')
+            let savedCompletedTodos = localStorage.getItem('completed-to-dos')
+
+            if (savedActiveTodos === '' || savedActiveTodos === '[]') {
+                savedActiveTodos = []
+            }
+            else {
+                savedActiveTodos = JSON.parse(savedActiveTodos)
+            }
+
+            if (savedCompletedTodos === '' || savedCompletedTodos === '[]') {
+                savedCompletedTodos = []
+            }
+            else {
+                savedCompletedTodos = JSON.parse(savedCompletedTodos)
+            }
+
+            for (const task of savedActiveTodos) {
+
+                addTask(task.name, new Date(task.dueDate), task.notes)
+            }
+
+
+
+            _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].loadCompletedTasks(savedCompletedTodos)
+            updateCounter()
+
+
+            console.log(`Loaded ${savedActiveTodos.length} active tasks from memory`)
+            console.log(`Loaded ${savedCompletedTodos.length} completed tasks from memory`)
+
+        }
+
+        function editTaskEventHandler(id) {
+            const taskToEdit = _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].getToDoById(id)
+
+            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].toggleEditMenu()
+
+            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].setTaskEditParameters(taskToEdit.name, taskToEdit.dueDate, taskToEdit.notes)
+
+        }
+
+        function editTask(newTask) {
+            _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].editTask(newTask.id, newTask.name, newTask.dueDate, newTask.notes)
+            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].editTask(newTask.id, newTask.name, newTask.dueDate)
+        }
+
+        function keyPressEventHandler(e) {
+            if (_scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.formContainer.style.display === 'flex' && (e.key === 'Escape' || e.key === 'Enter')) {
+                _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].toggleEditMenu()
+                //redundant
+                // PubSub.publish('task-edited', Ui.getTaskBeingEdited())
+
+            }
+        }
+
+
+        function editMenuDoneButtonClickHandler() {
+            const id = _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].getTaskBeingEdited().id
+            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].toggleEditMenu()
+            pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().publish('to-do-completed', id)
+            setTimeout(() => {
+                _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].removeToDo(id)
+
+            }, 300);
+
+
+        }
+
+        function editMenueDeleteButtonClickHandler() {
+            const id = _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].getTaskBeingEdited().id
+            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].toggleEditMenu()
+            pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().publish('to-do-removed', id)
+            setTimeout(() => {
+                _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].removeToDo(id, 'delete')
+
+            }, 300);
+        }
+
 
         function start() {
 
@@ -22079,10 +22162,19 @@ const App
             pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('to-do-completed', (msg, id) => _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].completeToDo(+id))
             pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('completed-requested', (msg, data) => showCompletedTasks())
             pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('main-tasks-requested', (msg, data) => showMainTasks())
+            pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('edit-button-clicked', (msg, id) => editTaskEventHandler(+id))
+            pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('task-edited', (msg, newTask) => editTask(newTask))
+
 
             pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('to-do-removed', (msg, id) => updateCounter())
             pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('to-do-completed', (msg, id) => updateCounter())
             pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('new-to-do', (msg, id) => updateCounter())
+
+
+            pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('to-do-removed', (msg, id) => _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].saveData())
+            pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('to-do-completed', (msg, id) => _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].saveData())
+            pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('new-to-do', (msg, id) => _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].saveData())
+            pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe('task-edited', (msg, newTask) => _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].saveData())
 
             // PubSub.subscribe('page-loaded', (msg, data) => loadSaved())
             _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.addButton.addEventListener('click', () => pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().publish('add-button-clicked', _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].getUserInput()))
@@ -22090,10 +22182,22 @@ const App
             _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.textInput.addEventListener('keydown', (e) => pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().publish('text-input-keydown', e.key))
             _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.completedTasksButton.addEventListener('click', () => pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().publish('completed-requested'))
             _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.mainTasksButton.addEventListener('click', () => pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().publish('main-tasks-requested'))
-            // window.addEventListener('load', PubSub.publish('page-loaded'))
+            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.taskEditName.addEventListener('input', (e) => pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().publish('task-edited', _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].getTaskBeingEdited()))
+            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.taskEditDatePicker.addEventListener('input', (e) => pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().publish('task-edited', _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].getTaskBeingEdited()))
+            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.taskEditTextArea.addEventListener('input', (e) => pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().publish('task-edited', _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].getTaskBeingEdited()))
+            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.taskEditDoneButton.addEventListener('click', () => editMenuDoneButtonClickHandler())
+            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.taskEditDeleteButton.addEventListener('click', () => editMenueDeleteButtonClickHandler())
+            window.addEventListener('keydown', (e) => keyPressEventHandler(e))
+            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.formContainer.addEventListener('click', (e) => {
+                if (e.target !== e.currentTarget) return
+                //redundant
+                // PubSub.publish('task-edited', Ui.getTaskBeingEdited())
+                _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].toggleEditMenu()
+            })
+
             _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].setDateInputDefaultValue()
 
-
+            loadSavedData()
         }
 
 
@@ -22131,13 +22235,21 @@ const ToDo = (function () {
         type: 'to_do'
     }
 
+  
 
-
-    function createToDo(name, dueDate) {
+    function createToDo(name, dueDate, notes='') {
         //dueDate is a javascript Date Object
-        const newObj = Object.assign(Object.create(proto), { id: idCounter++, name, dueDate })
+        const newObj = Object.assign(Object.create(proto), { id: idCounter++, name, dueDate, notes })
         toDoArray.push(newObj)
         return newObj
+    }
+
+    function getToDoById(id) {
+        for (const task of toDoArray) {
+            if (task.id === id) {
+                return task
+            }
+        }
     }
 
     function removeActiveToDo(id) {
@@ -22178,10 +22290,44 @@ const ToDo = (function () {
     function getCurrentMainTasks() {
         return toDoArray
     }
-    // function saveData() {
-    //     localStorage.setItem('to-dos', JSON.stringify(toDoArray))
-    // }
 
+
+    function saveData() {
+        const cleanedActiveToDos = []
+        const cleanedCompletedToDos = []
+
+        for (const task of toDoArray) {
+            cleanedActiveToDos.push({name: task.name, dueDate: task.dueDate, notes: task.notes})
+        }
+
+        for (const task of doneArray) {
+            cleanedCompletedToDos.push({name: task.name, dueDate: task.dueDate})
+        }
+
+
+        localStorage.setItem('active-to-dos', JSON.stringify(cleanedActiveToDos))
+        localStorage.setItem('completed-to-dos', JSON.stringify(cleanedCompletedToDos))
+    }
+
+
+    function loadCompletedTasks(array) {
+        for (const task of array) {
+            doneArray.push({id: idCounter++, name: task.name, dueDate: new Date(task.dueDate)})
+        }
+    }
+
+
+    function editTask(id, newName, newDueDate, newNotes) {
+        for (const task of toDoArray) {
+            if (task.id === id) {
+                task.name = newName
+                task.dueDate = newDueDate
+                task.notes = newNotes
+                break
+            }
+        }
+
+    }
     // function getSavedData() {
     //     const array = JSON.parse(localStorage.getItem('to-dos')) || []
     // }
@@ -22193,6 +22339,10 @@ const ToDo = (function () {
         completeToDo,
         getCompletedTasks,
         getCurrentMainTasks,
+        saveData,
+        loadCompletedTasks,
+        getToDoById,
+        editTask,
         // saveData,
         // getSavedData
     }
@@ -22231,14 +22381,22 @@ const Ui = (function () {
         tBody: document.querySelector('tbody'),
         textInput: document.querySelector('#textInput'),
         addButton: document.querySelector('#add-button'),
-        dateInput: document.querySelector('input[type="date"]'),
+        dateInput: document.querySelector('#add-task-date-picker'),
         errorOutput: document.querySelector('#error-placeholder'),
         textInputContainer: document.querySelector('#add-task'),
         mainTasksButton: document.querySelector('#main-tasks'),
         completedTasksButton: document.querySelector('#completed-tasks'),
         mainTasksCounter: document.querySelector('#main-tasks-counter'),
         completedTasksCounter: document.querySelector('#completed-tasks-counter'),
-        tableContainer: document.querySelector('#to-do-container')
+        tableContainer: document.querySelector('#to-do-container'),
+        formContainer: document.querySelector('#form-container'),
+        taskEditName: document.querySelector('#task-name'),
+        taskEditDoneButton: document.querySelector('#done-button'),
+        taskEditDatePicker: document.querySelector('#date-editor'),
+        taskEditTextArea: document.querySelector('#task-notes'),
+        taskEditDeleteButton: document.querySelector('#delete-button'),
+        taskEditMenu: document.querySelector('#edit-task-form')
+
 
     }
 
@@ -22267,12 +22425,69 @@ const Ui = (function () {
         pubsub_js__WEBPACK_IMPORTED_MODULE_1___default().publish('to-do-removed', id)
 
     }
+
+
+    function editButtonClicked(e) {
+        const id = e.target.parentNode.getAttribute('task-id')
+        domElements.taskEditMenu.setAttribute('task-being-edited', id)
+        pubsub_js__WEBPACK_IMPORTED_MODULE_1___default().publish('edit-button-clicked', id)
+    }
     // ====== End publishing functions ======
+
+    function toggleEditMenu() {
+
+
+        if (domElements.formContainer.style.display === 'flex') {
+            setTimeout(() => {
+                domElements.taskEditMenu.style.display = 'none';
+                domElements.formContainer.style.display = 'none';
+            }, 290);
+
+            // domElements.taskEditMenu.style.animation = 'fade-out 0.5s ease-out both'
+
+            domElements.formContainer.animate([
+                { opacity: 1 },
+                { opacity: 0 }
+            ],
+                {
+                    duration: 300,
+                    iterations: 1,
+                    easing: 'cubic-bezier(0.390, 0.575, 0.565, 1.000)',
+                    // fill: 'both'
+
+                })
+
+
+        }
+        else {
+            domElements.taskEditMenu.style.display = 'block';
+            domElements.formContainer.style.display = 'flex';
+            // domElements.taskEditMenu.style.animation = 'fade-in-top 0.6s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;'
+            domElements.taskEditMenu.animate([
+                { transform: 'translateY(-50px)', opacity: '0' },
+                { transform: 'translateY(0)', opacity: '1' }
+            ],
+                {
+                    duration: 300,
+                    iterations: 1,
+                    easing: 'ease-in',
+                    // fill: 'both',
+                })
+        }
+
+    }
 
 
     function clearTaskView() {
 
         domElements.tBody.innerHTML = '';
+    }
+
+
+    function setTaskEditParameters(name, dueDate, notes = '') {
+        domElements.taskEditName.value = name;
+        domElements.taskEditDatePicker.value = moment__WEBPACK_IMPORTED_MODULE_0___default()(dueDate).format('YYYY-MM-DD')
+        domElements.taskEditTextArea.value = notes;
     }
 
     function appendAddTaskRow() {
@@ -22294,6 +22509,7 @@ const Ui = (function () {
 
         const dateTd = document.createElement('td')
         const dateInput = document.createElement('input')
+        dateInput.setAttribute('id', 'add-task-date-picker')
         dateInput.setAttribute('type', 'date')
 
         dateTd.appendChild(dateInput)
@@ -22340,17 +22556,17 @@ const Ui = (function () {
             value = moment__WEBPACK_IMPORTED_MODULE_0___default()().format('YYYY-MM-DD')
         }
 
-        document.querySelector('input[type="date"]').value = value
+        document.querySelector('#add-task-date-picker').value = value
     }
 
     function getUserInput() {
         return {
             name: document.querySelector('#textInput').value,
-            dueDate: new Date(domElements.dateInput.value)
+            dueDate: new Date(document.querySelector('#add-task-date-picker').value)
         }
     }
 
-    function removeToDo(id, animation='complete') {
+    function removeToDo(id, animation = 'complete') {
         // How long the animation should run
         const animationSeconds = 0.6;
         const rowToRemove = document.querySelector(`tr[task-id="${id}"]`)
@@ -22372,57 +22588,87 @@ const Ui = (function () {
         setTimeout(() => domElements.tBody.removeChild(rowToRemove), (animationSeconds - 0.2) * 1000)
     }
 
+    function getTaskBeingEdited() {
+        return {
+            id: +domElements.taskEditMenu.getAttribute('task-being-edited'),
+            name: domElements.taskEditName.value,
+            dueDate: new Date(domElements.taskEditDatePicker.value),
+            notes: domElements.taskEditTextArea.value,
+        }
+    }
+
+
+    function formatDate(date) {
+
+        const today = new Date()
+
+        if (date.getYear() === today.getYear() &&
+            date.getMonth() === today.getMonth()) {
+
+            switch (date.getDate() - today.getDate()) {
+                case 0:
+                    return 'Today'
+                case 1:
+                    return 'Tommorow'
+                case 2:
+                    return '2 Days from today'
+
+                default:
+                    return moment__WEBPACK_IMPORTED_MODULE_0___default()(date).format('MMMM Do YYYY')
+            }
+        }
+        else {
+            return moment__WEBPACK_IMPORTED_MODULE_0___default()(date).format('MMMM Do YYYY')
+
+        }
+    }
 
 
     function appendToDo(id, name, dueDate, skipCheckMark = false) {
 
         const row = document.createElement('tr')
         row.setAttribute('task-id', id)
-        for (let i = 0; i < 4; i++) {
+        row.classList.add('task-row')
+        for (let i = 0; i < 5; i++) {
             let td = document.createElement('td')
             if (i === 0) {
 
                 td.classList.add('checkbox')
                 const checkbox = document.createElement('input')
                 checkbox.setAttribute('type', 'checkbox')
-                if (!skipCheckMark) td.appendChild(checkbox)
-                td.addEventListener('change', (e) => completeToDo(e))
+                if (!skipCheckMark) {
+                    td.appendChild(checkbox)
+                    td.addEventListener('change', (e) => completeToDo(e))
+                }
             }
             else if (i === 1) {
                 td.textContent = name
+                td.classList.add('task-row-name')
             }
             else if (i === 2) {
 
-                const today = new Date()
-                if (dueDate.getYear() === today.getYear() &&
-                    dueDate.getMonth() === today.getMonth()) {
-                    switch (dueDate.getDate() - today.getDate()) {
-                        case 0:
-                            td.textContent = 'Today'
-                            break
-                        case 1:
-                            td.textContent = 'Tommorow'
-                            break
-                        case 2:
-                            td.textContent = '2 Days from today'
-                            break
-                        default:
-                            td.textContent = moment__WEBPACK_IMPORTED_MODULE_0___default()(dueDate).format('MMMM Do YYYY')
-                    }
-                }
-                else {
-                    td.textContent = moment__WEBPACK_IMPORTED_MODULE_0___default()(dueDate).format('MMMM Do YYYY')
-                }
-
+                td.classList.add('task-row-date')
+                td.textContent = formatDate(dueDate)
 
             }
             else if (i === 3) {
+
+                td.classList.add('edit')
+                if (!skipCheckMark) {
+                    td.textContent = '✎'
+                    td.addEventListener('click', (e) => editButtonClicked(e))
+
+                }
+
+            }
+            else if (i === 4) {
                 td.classList.add('remove')
                 td.textContent = 'x'
 
                 td.addEventListener('click', (e) => removeButtonClicked(e))
 
             }
+
             row.appendChild(td)
         }
         domElements.tBody.appendChild(row)
@@ -22434,6 +22680,23 @@ const Ui = (function () {
         document.querySelector('#textInput').value = ''
     }
 
+    function editTask(id, newName, newDueDate) {
+        const allTasks = [...document.querySelectorAll('.task-row')
+        ]
+
+        for (const row of allTasks) {
+            let taskId = row.getAttribute('task-id')
+            if (+taskId === id) {
+                const taskRowName = row.querySelector('.task-row-name')
+                taskRowName.textContent = newName
+
+                const taskRowDate = row.querySelector('.task-row-date')
+                taskRowDate.textContent = formatDate(newDueDate)
+
+            }
+        }
+
+    }
 
 
     return {
@@ -22446,6 +22709,10 @@ const Ui = (function () {
         clearTextInput,
         clearTaskView,
         appendAddTaskRow,
+        toggleEditMenu,
+        setTaskEditParameters,
+        getTaskBeingEdited,
+        editTask,
         domElements
     }
 
