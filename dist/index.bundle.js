@@ -22154,10 +22154,10 @@ const App
         function filterTasks() {
             const today = new Date()
             const filterValue = _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.dateFilter.value
-
+            let completedView = false
 
             _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].clearTaskView()
-            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].appendAddTaskRow()
+
 
             if (filterValue === 'Today') {
 
@@ -22168,7 +22168,7 @@ const App
 
 
                     if (sameDay && sameMonth && sameYear) {
-                        _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].appendToDo(task.id, task.name, task.dueDate)
+                        _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].appendToDo(task.id, task.name, task.dueDate, completedView)
                     }
 
                 }
@@ -22176,8 +22176,11 @@ const App
             }
             else if (filterValue === 'All') {
                 for (const task of _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].getCurrentMainTasks()) {
-                    _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].appendToDo(task.id, task.name, task.dueDate)
+                    _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].appendToDo(task.id, task.name, task.dueDate, completedView)
+
                 }
+                _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].appendAddTaskRow()
+
             }
         }
 
@@ -22631,6 +22634,9 @@ const Ui = (function () {
         if (animation === 'delete') {
             borderColor = `border-color: ${colors.errorRed}`
             removeAnimation = '	animation: slide-out-left 0.5s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;'
+        }
+        else if (animation === 'fade') {
+            removeAnimation = 'animation: fade-out 0.5s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;'
         }
 
         removeAnimation = removeAnimation.replace(/ \d.\ds /, ' ' + animationSeconds + 's ')

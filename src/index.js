@@ -183,10 +183,10 @@ const App
         function filterTasks() {
             const today = new Date()
             const filterValue = Ui.domElements.dateFilter.value
-
+            let completedView = false
 
             Ui.clearTaskView()
-            Ui.appendAddTaskRow()
+
 
             if (filterValue === 'Today') {
 
@@ -197,7 +197,7 @@ const App
 
 
                     if (sameDay && sameMonth && sameYear) {
-                        Ui.appendToDo(task.id, task.name, task.dueDate)
+                        Ui.appendToDo(task.id, task.name, task.dueDate, completedView)
                     }
 
                 }
@@ -205,8 +205,11 @@ const App
             }
             else if (filterValue === 'All') {
                 for (const task of ToDo.getCurrentMainTasks()) {
-                    Ui.appendToDo(task.id, task.name, task.dueDate)
+                    Ui.appendToDo(task.id, task.name, task.dueDate, completedView)
+
                 }
+                Ui.appendAddTaskRow()
+
             }
         }
 

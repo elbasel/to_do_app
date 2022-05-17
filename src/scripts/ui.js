@@ -218,6 +218,9 @@ const Ui = (function () {
             borderColor = `border-color: ${colors.errorRed}`
             removeAnimation = '	animation: slide-out-left 0.5s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;'
         }
+        else if (animation === 'fade') {
+            removeAnimation = 'animation: fade-out 0.5s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;'
+        }
 
         removeAnimation = removeAnimation.replace(/ \d.\ds /, ' ' + animationSeconds + 's ')
         rowToRemove.setAttribute('style', removeAnimation + '; ' + borderColor)
