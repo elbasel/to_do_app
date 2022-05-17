@@ -1,47 +1,78 @@
-    <!DOCTYPE html>
-    <html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>ToDoList</title>
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToDoList</title>
+</head>
 
-    <body>
-        <div id="sidebar">
-            <div id="main-tasks">
-                <p>Tasks</p>
-                <div class="counter" id="main-tasks-counter">0</div>
+
+<body>
+    <div id="form-container">
+        <div id="edit-task-form">
+            <div id="name-container">
+                <input id="task-name" value="task name" type="text">
+                <div id="done-button">Mark as Done ✔</div>
             </div>
-            <div id="completed-tasks">
-                <p>Completed</p>
-                <div class="counter" id="completed-tasks-counter">0</div>
-            </div>
+
+
+            <h3>Due Date</h3>
+            <input id="date-editor" type="date">
+                
+            <h3>Notes</h3>
+            <textarea id="task-notes" placeholder="Enter your notes here"></textarea>
+
+            <button id="delete-button">Delete</button>
         </div>
-        <main>
-            <div id="to-do-container">
-                <table>
-                    <thead>
-                        <tr id="headers">
-                            <th class="checkbox"></th>
-                            <th>Name</th>
-                            <th>Due Date</th>
-                        </tr>
+    </div>
+ 
 
-                    </thead>
-                    <tbody>
-                        <tr id="add-task">
-                            <td><input type="text" placeholder="Quickly add a task" id="textInput"></td>
-                            <p id="error-placeholder"></p>
+    <div id="sidebar">
+        <div id="main-tasks">
+            <p>Tasks</p>
+            <div class="counter" id="main-tasks-counter">0</div>
+        </div>
+        <div id="completed-tasks">
+            <p>Completed</p>
+            <div class="counter" id="completed-tasks-counter">0</div>
+        </div>
 
-                            <td><input type="date"></td>
-                            <td id="button-td"><button id="add-button">+</button></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </main>
-    </body>
 
-    </html>
+        <h2>Filters</h2>
+
+        <div id="date-filter">
+            <h3>Date:</h3> <select>
+                <option>All</option>
+                <option>Today</option>
+                <option>Next 7 Days</option>
+            </select>
+        </div>
+    </div>
+    <main>
+        <div id="to-do-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="checkbox"></th>
+                        <th>Title</th>
+                        <th>Due Date</th>
+                    </tr>
+
+                </thead>
+                <tbody>
+                    <tr id="add-task">
+                        <td><input type="text" placeholder="Add a task" id="textInput"></td>
+                        <p id="error-placeholder"></p>
+
+                        <td><input id="add-task-date-picker" type="date"></td>
+                        <td id="button-td"><button id="add-button">+</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+</body>
+
+</html>

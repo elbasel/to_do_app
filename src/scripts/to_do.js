@@ -9,13 +9,21 @@ const ToDo = (function () {
         type: 'to_do'
     }
 
+  
 
-
-    function createToDo(name, dueDate) {
+    function createToDo(name, dueDate, notes='') {
         //dueDate is a javascript Date Object
-        const newObj = Object.assign(Object.create(proto), { id: idCounter++, name, dueDate })
+        const newObj = Object.assign(Object.create(proto), { id: idCounter++, name, dueDate, notes })
         toDoArray.push(newObj)
         return newObj
+    }
+
+    function getToDoById(id) {
+        for (const task of toDoArray) {
+            if (task.id === id) {
+                return task
+            }
+        }
     }
 
     function removeActiveToDo(id) {
@@ -56,10 +64,44 @@ const ToDo = (function () {
     function getCurrentMainTasks() {
         return toDoArray
     }
-    // function saveData() {
-    //     localStorage.setItem('to-dos', JSON.stringify(toDoArray))
-    // }
 
+
+    function saveData() {
+        const cleanedActiveToDos = []
+        const cleanedCompletedToDos = []
+
+        for (const task of toDoArray) {
+            cleanedActiveToDos.push({name: task.name, dueDate: task.dueDate, notes: task.notes})
+        }
+
+        for (const task of doneArray) {
+            cleanedCompletedToDos.push({name: task.name, dueDate: task.dueDate})
+        }
+
+
+        localStorage.setItem('active-to-dos', JSON.stringify(cleanedActiveToDos))
+        localStorage.setItem('completed-to-dos', JSON.stringify(cleanedCompletedToDos))
+    }
+
+
+    function loadCompletedTasks(array) {
+        for (const task of array) {
+            doneArray.push({id: idCounter++, name: task.name, dueDate: new Date(task.dueDate)})
+        }
+    }
+
+
+    function editTask(id, newName, newDueDate, newNotes) {
+        for (const task of toDoArray) {
+            if (task.id === id) {
+                task.name = newName
+                task.dueDate = newDueDate
+                task.notes = newNotes
+                break
+            }
+        }
+
+    }
     // function getSavedData() {
     //     const array = JSON.parse(localStorage.getItem('to-dos')) || []
     // }
@@ -71,6 +113,10 @@ const ToDo = (function () {
         completeToDo,
         getCompletedTasks,
         getCurrentMainTasks,
+        saveData,
+        loadCompletedTasks,
+        getToDoById,
+        editTask,
         // saveData,
         // getSavedData
     }
