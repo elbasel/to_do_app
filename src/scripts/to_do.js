@@ -57,6 +57,14 @@ const ToDo = (function () {
     }
 
 
+    function unCompleteToDo(id) {
+        for (let i = 0; i < doneArray.length; i++) {
+            if (doneArray[i].id === id) {
+                toDoArray.push(doneArray.splice(i, 1)[0])
+            }
+        }
+    }
+
     function getCompletedTasks() {
         return doneArray
     }
@@ -117,6 +125,7 @@ const ToDo = (function () {
         loadCompletedTasks,
         getToDoById,
         editTask,
+        unCompleteToDo,
         // saveData,
         // getSavedData
     }

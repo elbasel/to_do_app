@@ -189,6 +189,8 @@ const App
             PubSub.subscribe('input', (msg, userInput) => validateTask(msg, userInput))
             PubSub.subscribe('to-do-removed', (msg, id) => removeToDo(+id))
             PubSub.subscribe('to-do-completed', (msg, id) => ToDo.completeToDo(+id))
+            PubSub.subscribe('to-do-uncompleted', (msg, id) => ToDo.unCompleteToDo(+id))
+
             PubSub.subscribe('completed-requested', (msg, data) => showCompletedTasks())
             PubSub.subscribe('main-tasks-requested', (msg, data) => showMainTasks())
             PubSub.subscribe('edit-button-clicked', (msg, id) => editTaskEventHandler(+id))
@@ -197,11 +199,13 @@ const App
 
             PubSub.subscribe('to-do-removed', (msg, id) => updateCounter())
             PubSub.subscribe('to-do-completed', (msg, id) => updateCounter())
+            PubSub.subscribe('to-do-uncompleted', (msg, id) => updateCounter())
             PubSub.subscribe('new-to-do', (msg, id) => updateCounter())
 
 
             PubSub.subscribe('to-do-removed', (msg, id) => ToDo.saveData())
             PubSub.subscribe('to-do-completed', (msg, id) => ToDo.saveData())
+            PubSub.subscribe('to-do-uncompleted', (msg, id) => ToDo.saveData())
             PubSub.subscribe('new-to-do', (msg, id) => ToDo.saveData())
             PubSub.subscribe('task-edited', (msg, newTask) => ToDo.saveData())
 

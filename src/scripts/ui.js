@@ -49,6 +49,13 @@ const Ui = (function () {
 
     }
 
+    function unCompleteToDo(e) {
+        const id = e.target.parentNode.parentNode.getAttribute('task-id')
+        removeToDo(id, 'fade')
+        PubSub.publish('to-do-uncompleted', id)
+        
+    }
+
     function removeButtonClicked(e) {
         const id = e.target.parentNode.getAttribute('task-id')
         removeToDo(id, 'delete')
@@ -266,10 +273,18 @@ const Ui = (function () {
                 td.classList.add('checkbox')
                 const checkbox = document.createElement('input')
                 checkbox.setAttribute('type', 'checkbox')
+
                 if (!skipCheckMark) {
-                    td.appendChild(checkbox)
+                    
                     td.addEventListener('change', (e) => completeToDo(e))
                 }
+                else {
+                    checkbox.checked = true
+                    td.addEventListener('change', (e) => unCompleteToDo(e))
+                    row.classList.add('strikeout')
+                }
+                td.appendChild(checkbox)
+
             }
             else if (i === 1) {
                 td.textContent = name

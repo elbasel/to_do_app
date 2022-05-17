@@ -273,6 +273,14 @@ tbody>tr {
     /* z-index: 1; */
 
 
+
+}
+
+#add-task-date-picker {
+    max-width: 195px;
+    /* color: red; */
+    height: 100%;
+    padding: 0px !important;
 }
 
 #add-task button {
@@ -549,6 +557,32 @@ tbody>tr>td:nth-child(2) {
 #delete-button:active {
     transform: translateY(1px);
 }
+
+
+td {
+    position: relative;
+
+}
+
+tr.strikeout td:before {
+    content: " ";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    border-bottom: 5px solid rgba(0, 0, 0);
+    width: 100%;
+    z-index: 3;
+}
+
+tr.strikeout td:nth-child(1):before {
+    width: 0;
+}
+
+tr.strikeout td:nth-child(5):before {
+    width: 0;
+}
+
+
 
 
 @keyframes tracking-in-expand {
