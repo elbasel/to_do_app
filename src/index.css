@@ -600,7 +600,7 @@ tr.strikeout td:before {
     position: absolute;
     top: 50%;
     left: 0;
-    border-bottom: 5px solid rgba(0, 0, 0);
+    border-bottom: 1px solid rgba(0, 0, 0);
     width: 100%;
     z-index: 3;
 }
