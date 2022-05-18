@@ -27,7 +27,7 @@ const Ui = (function () {
         taskEditDeleteButton: document.querySelector('#delete-button'),
         taskEditMenu: document.querySelector('#edit-task-form'),
         dateFilter: document.querySelector("#date-filter > select"),
-        sidebarButton: document.querySelectorAll('#sidebar-button'),
+        sidebarButton: document.querySelector('#sidebar-button'),
         sidebar: document.querySelector('#sidebar')
 
     }
@@ -55,7 +55,7 @@ const Ui = (function () {
         const id = e.target.parentNode.parentNode.getAttribute('task-id')
         removeToDo(id, 'fade')
         PubSub.publish('to-do-uncompleted', id)
-        
+
     }
 
     function removeButtonClicked(e) {
@@ -280,7 +280,7 @@ const Ui = (function () {
                 checkbox.setAttribute('type', 'checkbox')
 
                 if (!skipCheckMark) {
-                    
+
                     td.addEventListener('change', (e) => completeToDo(e))
                 }
                 else {
@@ -349,8 +349,36 @@ const Ui = (function () {
     }
 
     function toggleSidebar() {
-        if (domElements.sidebar.style.display === 'flex') {
-            domElements.sidebar.style.display = 'none'
+        if (window.getComputedStyle(domElements.sidebar).display === 'flex') {
+            //    domElements.sidebar.style.animation = 'slide-out-left 0.5s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;'
+            domElements.sidebar.animate([
+                {transform: 'translateX(0)', opacity: 1},
+                {transform: 'translateX(-1000px)', opacity: 0}
+            ],
+            {
+                duration: 500,
+            })
+            setTimeout(() => {
+                domElements.sidebar.style.display = 'none'
+                document.querySelector('#add-task').style.width = '75%'
+
+            }, 490);
+        }
+        else {
+            domElements.sidebar.style.display = 'flex'
+            document.querySelector('#add-task').style.width = '59%'
+
+
+            domElements.sidebar.animate([
+                {transform: 'translateX(-1000px)', opacity: 0},
+                {transform: 'translateX(0)', opacity: 1}
+            ],
+            {
+                duration: 500
+            })
+
+     
+
         }
     }
 

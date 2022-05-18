@@ -80,6 +80,9 @@ const App
             Ui.domElements.tBody.style.height = '100%'
             Ui.domElements.tableContainer.style.paddingBottom = '0px'
             Ui.domElements.tBody.style.paddingBottom = '16px'
+        
+            Ui.domElements.dateFilter.value = 'All'
+
         }
 
 
@@ -99,6 +102,7 @@ const App
             Ui.domElements.tBody.style.height = '60%'
             Ui.domElements.tableContainer.style.paddingBottom = '2rem'
             Ui.domElements.tBody.style.padddingBottom = '0px'
+            Ui.domElements.dateFilter.value = 'All'
 
             Ui.setDateInputDefaultValue()
         }
@@ -292,6 +296,7 @@ const App
             Ui.domElements.taskEditDoneButton.addEventListener('click', () => editMenuDoneButtonClickHandler())
             Ui.domElements.taskEditDeleteButton.addEventListener('click', () => editMenueDeleteButtonClickHandler())
             Ui.domElements.dateFilter.addEventListener('change', (e) => filterTasks())
+            Ui.domElements.sidebarButton.addEventListener('click', () => Ui.toggleSidebar())
             window.addEventListener('keydown', (e) => keyPressEventHandler(e))
             Ui.domElements.formContainer.addEventListener('click', (e) => {
                 if (e.target !== e.currentTarget) return
