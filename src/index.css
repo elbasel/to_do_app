@@ -81,11 +81,28 @@ body {
     gap: 16px;
     font-family: "Helvetica Neue", Helvetica, Arial, Roboto, sans-serif;
     font-weight: 200;
-
+    opacity: 0.98;
 
 }
 
-#sidebar>div {
+#sidebar-button {
+    background-image: url(./menu.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 32px;
+    height: 32px;
+    position: fixed;
+    top: 10px;
+    left: 250px;
+}
+
+#sidebar-button:hover {
+    background-color: #25252b;
+    border: 0;
+    outline: 0;
+}
+
+.sidebar-task-button {
     width: 99%;
     display: flex;
     gap: 16px;
@@ -94,7 +111,12 @@ body {
     padding: 12px;
 }
 
-#sidebar>div:hover {
+.selected {
+    background-color: #25252b;
+
+}
+
+.sidebar-task-button:hover {
     background-color: #25252b;
 }
 
@@ -124,6 +146,7 @@ select {
     border-radius: 24px;
     border: 1px solid rgba(255, 255, 255, 0.182);
     appearance: none;
+    outline: none;
 
 }
 

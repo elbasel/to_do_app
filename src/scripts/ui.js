@@ -27,7 +27,8 @@ const Ui = (function () {
         taskEditDeleteButton: document.querySelector('#delete-button'),
         taskEditMenu: document.querySelector('#edit-task-form'),
         dateFilter: document.querySelector("#date-filter > select"),
-
+        sidebarButton: document.querySelectorAll('#sidebar-button'),
+        sidebar: document.querySelector('#sidebar')
 
     }
 
@@ -347,6 +348,11 @@ const Ui = (function () {
 
     }
 
+    function toggleSidebar() {
+        if (domElements.sidebar.style.display === 'flex') {
+            domElements.sidebar.style.display = 'none'
+        }
+    }
 
     return {
         appendToDo,
@@ -362,6 +368,8 @@ const Ui = (function () {
         setTaskEditParameters,
         getTaskBeingEdited,
         editTask,
+        toggleSidebar,
+        colors,
         domElements
     }
 

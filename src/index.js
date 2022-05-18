@@ -65,11 +65,13 @@ const App
 
         function showCompletedTasks() {
 
-
+            
             if (currentActiveView === 'completed-tasks') return
 
             currentActiveView = 'completed-tasks'
             Ui.clearTaskView()
+            Ui.domElements.completedTasksButton.classList.add('selected')
+            Ui.domElements.mainTasksButton.classList.remove('selected')
             for (const task of ToDo.getCompletedTasks()) {
 
                 Ui.appendToDo(task.id, task.name, task.dueDate, true)
@@ -87,6 +89,9 @@ const App
             currentActiveView = 'main-tasks'
             Ui.clearTaskView()
             Ui.appendAddTaskRow()
+            Ui.domElements.mainTasksButton.classList.add('selected')
+            Ui.domElements.completedTasksButton.classList.remove('selected')
+
             for (const task of ToDo.getCurrentMainTasks()) {
                 Ui.appendToDo(task.id, task.name, task.dueDate)
             }
@@ -183,14 +188,26 @@ const App
         function filterTasks() {
             const today = new Date()
             const filterValue = Ui.domElements.dateFilter.value
+            let tasksToView = ToDo.getCurrentMainTasks()
             let completedView = false
 
-            Ui.clearTaskView()
 
+            Ui.clearTaskView()
+            Ui.domElements.tBody.style.height = '100%'
+            Ui.domElements.tableContainer.style.paddingBottom = '0px'
+            Ui.domElements.tBody.style.paddingBottom = '16px'
+
+
+            if (currentActiveView === 'completed-tasks') {
+                tasksToView = ToDo.getCompletedTasks()
+                completedView = true
+
+            }
+    
 
             if (filterValue === 'Today') {
 
-                for (const task of ToDo.getCurrentMainTasks()) {
+                for (const task of tasksToView) {
                     const sameDay = task.dueDate.getDate() === today.getDate()
                     const sameMonth = task.dueDate.getMonth() === today.getMonth()
                     const sameYear = task.dueDate.getYear() === today.getYear()
@@ -202,13 +219,34 @@ const App
 
                 }
 
+                Ui.domElements.dateFilter.style.borderColor = Ui.colors.errorRed
+
+            }
+            else if (filterValue === 'Next 7 Days') {
+                for (const task of tasksToView) {
+                    const correctDay = (task.dueDate.getDate() - today.getDate()) <= 7
+                    const sameMonth = task.dueDate.getMonth() === today.getMonth()
+                    const sameYear = task.dueDate.getYear() === today.getYear()
+
+                    if (correctDay && sameMonth && sameYear) {
+                        Ui.appendToDo(task.id, task.name, task.dueDate, completedView)
+                    }
+                }
+                Ui.domElements.dateFilter.style.borderColor = Ui.colors.errorRed
+
             }
             else if (filterValue === 'All') {
-                for (const task of ToDo.getCurrentMainTasks()) {
+                for (const task of tasksToView) {
                     Ui.appendToDo(task.id, task.name, task.dueDate, completedView)
 
                 }
-                Ui.appendAddTaskRow()
+                if (currentActiveView === 'main-tasks') Ui.appendAddTaskRow()
+                
+                Ui.domElements.dateFilter.style.borderColor = 'white'
+                Ui.domElements.tBody.style.height = '60%'
+                Ui.domElements.tableContainer.style.paddingBottom = '2rem'
+                Ui.domElements.tBody.style.padddingBottom = '0px'
+
 
             }
         }
