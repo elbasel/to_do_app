@@ -22036,11 +22036,13 @@ const App
 
         function showCompletedTasks() {
 
-
+            
             if (currentActiveView === 'completed-tasks') return
 
             currentActiveView = 'completed-tasks'
             _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].clearTaskView()
+            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.completedTasksButton.classList.add('selected')
+            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.mainTasksButton.classList.remove('selected')
             for (const task of _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].getCompletedTasks()) {
 
                 _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].appendToDo(task.id, task.name, task.dueDate, true)
@@ -22058,6 +22060,9 @@ const App
             currentActiveView = 'main-tasks'
             _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].clearTaskView()
             _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].appendAddTaskRow()
+            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.mainTasksButton.classList.add('selected')
+            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.completedTasksButton.classList.remove('selected')
+
             for (const task of _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].getCurrentMainTasks()) {
                 _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].appendToDo(task.id, task.name, task.dueDate)
             }
@@ -22154,14 +22159,26 @@ const App
         function filterTasks() {
             const today = new Date()
             const filterValue = _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.dateFilter.value
+            let tasksToView = _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].getCurrentMainTasks()
             let completedView = false
 
-            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].clearTaskView()
 
+            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].clearTaskView()
+            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.tBody.style.height = '100%'
+            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.tableContainer.style.paddingBottom = '0px'
+            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.tBody.style.paddingBottom = '16px'
+
+
+            if (currentActiveView === 'completed-tasks') {
+                tasksToView = _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].getCompletedTasks()
+                completedView = true
+
+            }
+    
 
             if (filterValue === 'Today') {
 
-                for (const task of _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].getCurrentMainTasks()) {
+                for (const task of tasksToView) {
                     const sameDay = task.dueDate.getDate() === today.getDate()
                     const sameMonth = task.dueDate.getMonth() === today.getMonth()
                     const sameYear = task.dueDate.getYear() === today.getYear()
@@ -22173,13 +22190,34 @@ const App
 
                 }
 
+                _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.dateFilter.style.borderColor = _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].colors.errorRed
+
+            }
+            else if (filterValue === 'Next 7 Days') {
+                for (const task of tasksToView) {
+                    const correctDay = (task.dueDate.getDate() - today.getDate()) <= 7
+                    const sameMonth = task.dueDate.getMonth() === today.getMonth()
+                    const sameYear = task.dueDate.getYear() === today.getYear()
+
+                    if (correctDay && sameMonth && sameYear) {
+                        _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].appendToDo(task.id, task.name, task.dueDate, completedView)
+                    }
+                }
+                _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.dateFilter.style.borderColor = _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].colors.errorRed
+
             }
             else if (filterValue === 'All') {
-                for (const task of _scripts_to_do__WEBPACK_IMPORTED_MODULE_1__["default"].getCurrentMainTasks()) {
+                for (const task of tasksToView) {
                     _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].appendToDo(task.id, task.name, task.dueDate, completedView)
 
                 }
-                _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].appendAddTaskRow()
+                if (currentActiveView === 'main-tasks') _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].appendAddTaskRow()
+                
+                _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.dateFilter.style.borderColor = 'white'
+                _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.tBody.style.height = '60%'
+                _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.tableContainer.style.paddingBottom = '2rem'
+                _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.tBody.style.padddingBottom = '0px'
+
 
             }
         }
@@ -22444,7 +22482,8 @@ const Ui = (function () {
         taskEditDeleteButton: document.querySelector('#delete-button'),
         taskEditMenu: document.querySelector('#edit-task-form'),
         dateFilter: document.querySelector("#date-filter > select"),
-
+        sidebarButton: document.querySelectorAll('#sidebar-button'),
+        sidebar: document.querySelector('#sidebar')
 
     }
 
@@ -22764,6 +22803,11 @@ const Ui = (function () {
 
     }
 
+    function toggleSidebar() {
+        if (domElements.sidebar.style.display === 'flex') {
+            domElements.sidebar.style.display = 'none'
+        }
+    }
 
     return {
         appendToDo,
@@ -22779,6 +22823,8 @@ const Ui = (function () {
         setTaskEditParameters,
         getTaskBeingEdited,
         editTask,
+        toggleSidebar,
+        colors,
         domElements
     }
 
