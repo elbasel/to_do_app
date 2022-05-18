@@ -22051,6 +22051,9 @@ const App
             _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.tBody.style.height = '100%'
             _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.tableContainer.style.paddingBottom = '0px'
             _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.tBody.style.paddingBottom = '16px'
+        
+            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.dateFilter.value = 'All'
+
         }
 
 
@@ -22070,6 +22073,7 @@ const App
             _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.tBody.style.height = '60%'
             _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.tableContainer.style.paddingBottom = '2rem'
             _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.tBody.style.padddingBottom = '0px'
+            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.dateFilter.value = 'All'
 
             _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].setDateInputDefaultValue()
         }
@@ -22263,6 +22267,7 @@ const App
             _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.taskEditDoneButton.addEventListener('click', () => editMenuDoneButtonClickHandler())
             _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.taskEditDeleteButton.addEventListener('click', () => editMenueDeleteButtonClickHandler())
             _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.dateFilter.addEventListener('change', (e) => filterTasks())
+            _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.sidebarButton.addEventListener('click', () => _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].toggleSidebar())
             window.addEventListener('keydown', (e) => keyPressEventHandler(e))
             _scripts_ui__WEBPACK_IMPORTED_MODULE_2__["default"].domElements.formContainer.addEventListener('click', (e) => {
                 if (e.target !== e.currentTarget) return
@@ -22482,7 +22487,7 @@ const Ui = (function () {
         taskEditDeleteButton: document.querySelector('#delete-button'),
         taskEditMenu: document.querySelector('#edit-task-form'),
         dateFilter: document.querySelector("#date-filter > select"),
-        sidebarButton: document.querySelectorAll('#sidebar-button'),
+        sidebarButton: document.querySelector('#sidebar-button'),
         sidebar: document.querySelector('#sidebar')
 
     }
@@ -22510,7 +22515,7 @@ const Ui = (function () {
         const id = e.target.parentNode.parentNode.getAttribute('task-id')
         removeToDo(id, 'fade')
         pubsub_js__WEBPACK_IMPORTED_MODULE_1___default().publish('to-do-uncompleted', id)
-        
+
     }
 
     function removeButtonClicked(e) {
@@ -22735,7 +22740,7 @@ const Ui = (function () {
                 checkbox.setAttribute('type', 'checkbox')
 
                 if (!skipCheckMark) {
-                    
+
                     td.addEventListener('change', (e) => completeToDo(e))
                 }
                 else {
@@ -22804,8 +22809,36 @@ const Ui = (function () {
     }
 
     function toggleSidebar() {
-        if (domElements.sidebar.style.display === 'flex') {
-            domElements.sidebar.style.display = 'none'
+        if (window.getComputedStyle(domElements.sidebar).display === 'flex') {
+            //    domElements.sidebar.style.animation = 'slide-out-left 0.5s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;'
+            domElements.sidebar.animate([
+                {transform: 'translateX(0)', opacity: 1},
+                {transform: 'translateX(-1000px)', opacity: 0}
+            ],
+            {
+                duration: 500,
+            })
+            setTimeout(() => {
+                domElements.sidebar.style.display = 'none'
+                document.querySelector('#add-task').style.width = '75%'
+
+            }, 490);
+        }
+        else {
+            domElements.sidebar.style.display = 'flex'
+            document.querySelector('#add-task').style.width = '59%'
+
+
+            domElements.sidebar.animate([
+                {transform: 'translateX(-1000px)', opacity: 0},
+                {transform: 'translateX(0)', opacity: 1}
+            ],
+            {
+                duration: 500
+            })
+
+     
+
         }
     }
 
