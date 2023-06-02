@@ -1,2 +1,4 @@
 # TO DO APP
-"Live Demp"[https://elbasel.github.io/to_do_app/]
+
+Playig around with PubSub lib and js 
+https://elbasel.github.io/to_do_app/
